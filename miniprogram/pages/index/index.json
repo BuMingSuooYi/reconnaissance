@@ -1,0 +1,5 @@
+{
+  "usingComponents": {
+    "inputdropdown": "../../my_components/inputdropdown/inputdropdown"
+  }
+}

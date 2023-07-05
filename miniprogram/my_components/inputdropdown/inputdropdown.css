@@ -1,0 +1,50 @@
+.select-container {
+  position: relative;
+  display: inline-block;
+  width: 200rpx;
+  border: 1rpx solid #ccc;
+  padding: 5rpx;
+  cursor: pointer;
+}
+
+.select-input {
+  width: calc(100% - 20rpx);
+  outline: none;
+  border: none;
+  background-color: transparent;
+}
+
+.select-input:after {
+  content: "...";
+  position: absolute;
+  top: 50%;
+  right: 8rpx;
+  transform: translateY(-50%);
+}
+
+.arrow-icon {
+  position: absolute;
+  right: 5rpx;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.options {
+  position: absolute;
+  top: 30rpx;
+  left: 0;
+  width: 100%;
+  max-height: 200rpx;
+  overflow-y: auto;
+  background-color: #fff;
+  border: 1rpx solid #ccc;
+}
+
+.option {
+  padding: 10rpx;
+  cursor: pointer;
+}
+
+.option:hover {
+  background-color: #f0f0f0;
+}

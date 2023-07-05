@@ -1,0 +1,7 @@
+<view class="select-container" bindtap="toggleOptions">
+  <input class="select-input" value="{{inputValue}}" bindinput="inputChange" placeholder="选择或输入" />
+
+  <view class="options" wx:if="{{showOptions}}">
+    <view class="option" wx:for="{{options}}" wx:key="index" data-option="{{item}}" bindtap="selectOption">{{item}}</view>
+    </view>
+</view>
