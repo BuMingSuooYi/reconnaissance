@@ -68,8 +68,7 @@
 </view>
 
 <!-- 底部弹窗的新增开关弹窗 -->
-<!-- <view class="cu-modal {{addUnit.exist? 'show':''}}"> -->
-<view class="cu-modal show">
+<view class="cu-modal {{addUnit.exist? 'show':''}}">
   <view class="cu-dialog">
     <view class="cu-bar bg-white justify-end">
       <view class="content">新增开关</view>
@@ -110,7 +109,7 @@
   </view>
 </view>
 
-<view class="cu-list menu" wx:for="{{roomList}}" wx:key="index1">
+  <view class="cu-list menu" wx:for="{{roomList}}" wx:key="index1">
   <view class="cu-item" catchtap="toStretch" data-index="{{index}}">
     <view class="content flex justify-between">
       <text class="text-grey">{{item.name}}</text>
@@ -127,7 +126,9 @@
         <view class="padding-xs solid .margin-xs" wx:for="{{item.case}}" wx:key="index3">
           <view class=".margin-left-xs" wx:for="{{item.unit}}" wx:key="index4">
             <view class="flex justify-between">
-              <view>{{item.name}}</view>
+              <view>{{item.name}} 
+              </view>
+              
             </view>
           </view>
 
@@ -135,5 +136,4 @@
       </view>
     </view>
   </view>
-
 </view>

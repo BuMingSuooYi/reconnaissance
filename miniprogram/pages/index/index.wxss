@@ -22,10 +22,11 @@
   margin-top: 0rpx;
 }
 
-.my-radio{
+/* .my-radio{
   margin: 10rpx;
-}
+} */
 
+/* 新增开关部分 */
 .my-container{
   display: flex;
   flex-wrap: wrap;

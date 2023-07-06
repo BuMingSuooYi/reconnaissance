@@ -255,7 +255,7 @@ Page({
       ]
     };
     this.setData({
-      addCase: add
+      addCase: {...add}
     });
     console.log(this.data.addCase);
     
