@@ -4,6 +4,10 @@ Component({
       type: Array,
       value: [],
     },
+    value:{
+        type:String,
+        value:""
+    }
   },
   data: {
     selectedOption: '',
@@ -27,6 +31,7 @@ Component({
     inputChange(e:any) {
       const value = e.detail.value;
       this.setData({
+        value:value,
         inputValue: value,
         selectedOption: '',
       });

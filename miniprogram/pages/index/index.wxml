@@ -37,16 +37,16 @@
         <form>
           <view class="flex cu-form-group margin-top">
             <text>位置：</text>
-            <inputdropdown options="{{addCase.placeList}}" bindchange="addCaseropdownChange"></inputdropdown>
+            <inputdropdown options="{{addCase.placeList}}" bindchange="addCaseropdownChange" value="{{addCase.fromplace.name}}"></inputdropdown>
           </view>
 
           <radio-group class="block" bindchange="radioChange">
             <view class="cu-form-group">
               <view class="title">取火方式：</view>
               <view>
-                <radio class="blue radio my-radio" value="1">零火</radio>
-                <radio class="blue radio my-radio" value="2">单火</radio>
-                <radio class="blue radio my-radio" value="3">电池</radio>
+                <radio class="blue radio my-radio " checked="{{addCase.fromplace.case.way==1? 'true':''}}" value="1">零火</radio>
+                <radio class="blue radio my-radio" checked="{{addCase.fromplace.case.way==2? 'true':''}}" value="2">单火</radio>
+                <radio class="blue radio my-radio" checked="{{addCase.fromplace.case.way==3? 'true':''}}" value="3">电池</radio>
               </view>
             </view>
           </radio-group>
@@ -79,7 +79,7 @@
     <view class="padding-xl">
       <view class="flex cu-form-group margin-top">
         <text>控制器件：</text>
-        <inputdropdown options="{{deviceList}}"
+        <inputdropdown options="{{deviceList}}" value="{{addUnit.device}}"
          bindchange="addDeviceropdownChange"></inputdropdown>
       </view>
       <view class="cu-form-group">
@@ -105,7 +105,7 @@
   <view class="text-lg text-bold ">从哪开始勘察？</view>
   <view class="flex">
     <view class='bg-blue cu-tag radius light padding-sm' catchtap="openAddRoom">+区域</view>
-    <view class='bg-blue cu-tag radius light padding-sm'>+情景</view>
+    <view class='bg-blue cu-tag radius light padding-sm' catchtap="ToScence">+情景</view>
   </view>
 </view>
 

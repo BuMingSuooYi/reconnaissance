@@ -1,2 +1,44 @@
-<!--pages/index/scence/scence.wxml-->
-<text>pages/index/scence/scence.wxml</text>
+
+<view class="DrawerPage {{deviceExist?'show':''}}">
+  <view class="bg-white flex padding-sm text-lg align-center ">
+    存在的情景
+  </view>
+  <view class="flex-container bg-white">
+    <view class="my-scence light bg-grey" wx:for="{{scenceList}}" wx:key="index1">
+      <view class="text-black">
+        {{item.name}}
+      </view>
+      <view class="padding-sm  my-tag text-red">×</view>
+    </view>
+  </view>
+
+
+
+  <view class="bg-white flex padding-sm justify-between solid">
+    <view class="flex text-lg align-center">请先选择控制器件</view>
+    <view class="cu-btn round bg-cyan" catchtap="showModal">去设置状态</view>
+  </view>
+
+  <checkbox-group class="block" bindchange="selectDevice">
+    <view class="cu-form-group" wx:for="{{deviceList}}" wx:key="index2">
+      <view class="title">{{item}}</view>
+      <checkbox class='round blue' checked="" value="{{index}}"></checkbox>
+    </view>
+  </checkbox-group>
+</view>
+
+
+<scroll-view scroll-y >
+</scroll-view>
+<view class="DrawerClose  {{deviceExist ?'show':''}} " bindtap="hideModal">
+  <text class="cuIcon-pullright"></text>
+</view>
+<scroll-view scroll-y class="DrawerWindow {{deviceExist ?'show':''}}">
+  <view class="cu-list menu card-menu margin-top-xl margin-bottom-xl shadow-lg">
+    <view class="arrow cu-form-group" wx:for="{{scenceI.selectedDevice}}" wx:key="index3">
+
+      <view class="title">{{item.name}}</view>
+      <switch catchchange="switchOnOff" class="{{item.state?'checked':''}}" checked="{{item.state}}" data-index="{{index}}"></switch>
+    </view>
+  </view>
+</scroll-view>
