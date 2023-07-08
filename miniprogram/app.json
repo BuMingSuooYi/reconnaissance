@@ -2,6 +2,7 @@
   "pages": [
     "pages/index/index",
     "pages/index/scence/scence",
+    "pages/index/curtain/curtain",
     "pages/logs/logs"
   ],
   "window": {

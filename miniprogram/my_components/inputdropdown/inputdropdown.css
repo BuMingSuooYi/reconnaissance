@@ -1,8 +1,10 @@
 .select-container {
   position: relative;
   display: inline-block;
-  width: 200rpx;
-  border: 1rpx solid #ccc;
+  width: 100%;
+  border-width: 50rpx;
+  border-style: solid;
+  border-color: black;
   padding: 5rpx;
   cursor: pointer;
 }
@@ -37,12 +39,13 @@
   max-height: 200rpx;
   overflow-y: auto;
   background-color: #fff;
-  border: 1rpx solid #ccc;
 }
 
 .option {
-  padding: 10rpx;
-  cursor: pointer;
+  padding: 20rpx;
+  border-width: 10rpx;
+  border-style: solid;
+  border-color: black;
 }
 
 .option:hover {

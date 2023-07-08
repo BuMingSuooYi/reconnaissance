@@ -5,7 +5,7 @@ Page({
    * 页面的初始数据
    */
   data: {
-    deviceList: [],//控制元件列表，来自上一个页面
+    deviceList : [],//控制元件列表，来自上一个页面
     deviceExist: false,//设置状态抽屉
     scenceList: [//情景列表，来自上一个页面和当前页面添加
       {
@@ -19,6 +19,7 @@ Page({
       },
     ],
     scenceI: {//正在编写的情景
+      scenceName:"",
       selectedDevice: [
 
       ]
@@ -30,17 +31,23 @@ Page({
   },
   //复选
   selectDevice(e: any) {
+    let indexList=e.detail.value;
+    indexList=indexList.sort((a, b) => a - b);
     this.setData({
-      indexList: e.detail.value
+      indexList: indexList
+      // indexList: e.detail.value
     })
     console.log(this.data.indexList);
+    // console.log(1,this.data.indexList.includes(1));
+    // console.log('1',this.data.indexList.includes('1'));
   },
   //显示抽屉按钮
   showModal() {
     let scenceI = this.data.scenceI;
     // let selectedDevice=[];
     let deviceList_j = 0;
-    for (let i = 0; i < this.data.indexList.length; i++) {
+    let i = 0
+    for (i = 0; i < this.data.indexList.length; i++) {
       if (scenceI.selectedDevice.length == deviceList_j
         || this.data.indexList[i] < scenceI.selectedDevice[deviceList_j].id) {
         let device = {
@@ -52,12 +59,13 @@ Page({
         deviceList_j++;
         console.log("增加了：",this.data.indexList[i]);
       } else if (this.data.indexList[i] == scenceI.selectedDevice[deviceList_j].id) {
-        deviceList_j++;
         console.log("跳过了：",scenceI.selectedDevice[deviceList_j].id);
+        deviceList_j++;
       } else {
         // 删除元素
         console.log("删除了：",scenceI.selectedDevice[deviceList_j].id);
         scenceI.selectedDevice.splice(deviceList_j, 1)
+        i--;
       }
 
       // let device = {
@@ -67,6 +75,7 @@ Page({
       // selectedDevice.push(device);
     };
       // scenceI.selectedDevice=selectedDevice;
+      scenceI.selectedDevice.splice(i)
     this.setData({
       scenceI: scenceI,
       deviceExist: true,
@@ -77,6 +86,32 @@ Page({
     this.setData({
       deviceExist: false,
     })
+  },
+  //情景名称输入框
+  scenceInput(e:any){
+    let scenceI=this.data.scenceI;
+    scenceI.scenceName=e.detail.value;
+    this.setData({
+      scenceI:scenceI,
+    })
+  },
+  //保存情景
+  comfirmScence(){
+    let scenceI=this.data.scenceI
+    let scence={
+        name: scenceI.scenceName,
+        devices: scenceI.selectedDevice,
+    };
+    let scenceList=this.data.scenceList;
+    scenceList.push(scence);
+    let indexList=[];
+    scenceI.name="";
+    this.setData({
+      scenceList:scenceList,
+      indexList:indexList,
+      scenceI:scenceI,
+    })
+    this.hideModal();
   },
   //选择开关状态
   switchOnOff(e: any) {
@@ -95,10 +130,11 @@ Page({
     let deviceList: never[] = [];
     const eventChannel = this.getOpenerEventChannel()
     // // 监听acceptDataFromOpenerPage事件，获取上一页面通过eventChannel传送到当前页面的数据
-    eventChannel.on('acceptDataFromOpenerPage', function (data) {
-      deviceList = data;
-    })
-
+    if(eventChannel){
+      eventChannel.on('acceptDataFromOpenerPage', function (data) {
+        deviceList = data;
+      })
+    }
     this.setData({
       deviceList: deviceList,
     })
@@ -133,7 +169,10 @@ Page({
    * 生命周期函数--监听页面卸载
    */
   onUnload() {
-
+    const eventChannel = this.getOpenerEventChannel()
+    eventChannel.emit('acceptDataFromOpenedPage', { data: this.data.scenceList });
+    // eventChannel.emit('someEvent', { data: '发过去的数据2' });
+    // eventChannel.emit('a', { data: '发过去的数据3' });
   },
 
   /**
