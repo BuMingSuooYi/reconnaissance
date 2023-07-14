@@ -344,12 +344,13 @@ Page({
     const placeIndex = e.currentTarget.dataset.placeindex;
     const connectIndex = e.currentTarget.dataset.connectindex;
     //判断是从位点处打开新增底盒还是从房间处打开底盒
+    console.log("connectIndex:",connectIndex);
     if (placeIndex != undefined && connectIndex != undefined) {
       add.fromplace.name = add.placeList[placeIndex];
       add.fromplace.conneceIndex = connectIndex;
     };
 
-    console.log("placeIndex:",placeIndex,"connectIndex:",connectIndex);
+    console.log("fromplace.conneceIndex:",this.data.addCase.fromplace.conneceIndex);
     
 
     this.setData({
@@ -371,29 +372,36 @@ Page({
   },
   //关闭新增底盒底部弹窗
   closeAddCase() {
-    let add = this.data.addCase;
-    add.exist = false;
-    add.room = {
-      name: "",
-      unfold: false,
-      place: [
-      ]
-    };
-    add.placeList = [];
-    add.TabCur = 1;
-    add.fromplace.name = "";
-    add.socket = 0;
-    add.fromplace.connectIndex = -1;
-    add.fromplace.case = {
-      id: -1,
-      way: 1,
-      unit: [
-      ]
-    };
+    let addCase={
+      TabCur: 1, // 默认是开关页
+      room: {
+        name: "",
+        unfold: false,
+        place: [
+
+        ],
+      },
+      placeList: [],//位点列表，打开新增底盒时赋值
+      exist: false,
+      caseClazz: ["插座", "开关", "空面板"],
+      fromplace: {
+        name: "",
+        conneceIndex: -1,
+        socket: 0,
+        case: {
+          id: 1,
+          way: 1,
+          unit: [
+          ]
+        }
+      },
+    };    
     this.setData({
-      addCase: { ...add }
+      addCase:addCase
 
     });
+    console.log("关闭新增底盒",this.data.addCase.fromplace.conneceIndex);
+    
   },
   //选择或新增位点
   addCaseropdownChange(e: any) {

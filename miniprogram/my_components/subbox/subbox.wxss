@@ -13,6 +13,18 @@ view{
 	background-color: rgb(95, 81, 60);
 	border-radius: 8rpx;
 	box-shadow: 8rpx 8rpx 8rpx rgba(0, 0, 0, 0.5);/*阴影*/
+	/* 相对定位 */
+	position: relative;
+}
+.shakeClass{
+	animation: shake 0.5s;
+}
+/* 抖动动画 */
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-10rpx); }
+  75% { transform: translateX(10rpx); }
+  100% { transform: translateX(0); }
 }
 
 .content{
@@ -118,7 +130,7 @@ view{
   text-overflow: ellipsis;
 
 }
-.badge{
+.badge-white{
 	margin: 0rpx auto;
 	margin-top: 10rpx;
 	width: 10rpx;
@@ -129,6 +141,37 @@ view{
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+.badge-red{
+	margin: 0rpx auto;
+	margin-top: 10rpx;
+	width: 10rpx;
+	height: 10rpx;
+	border-radius: 10rpx;
+  background-color: red;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.deletebadge{
+	width: 30rpx;
+	height: 30rpx;
+	margin: 0rpx auto;
+	background-color: red;
+	margin-top: 10rpx;
+	border-radius: 50rpx;
+	position: absolute;
+  top: -20rpx;
+	right: -10rpx;
+	
+	display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  line-height: 100%;
+}
+
 
 
 

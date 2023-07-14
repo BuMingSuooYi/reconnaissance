@@ -32,7 +32,7 @@
     <view class="padding-xl">
       <view class="cu-bar bg-white">
         <form>
-          <view class="flex cu-form-group" wx:if="{{addCase.fromplace.connectIndex==undefind}}">
+          <view class="flex cu-form-group" wx:if="{{addCase.fromplace.conneceIndex==-1}}">
             <text>位置：</text>
             <inputdropdown options="{{addCase.placeList}}" bindchange="addCaseropdownChange" value="{{addCase.fromplace.name}}"></inputdropdown>
           </view>
