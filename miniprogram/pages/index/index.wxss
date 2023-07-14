@@ -39,8 +39,23 @@
   height: auto;
 }
 
-.my-item {
-  width: 20rpx;
-  height: 10rpx ;
-  margin: 10rpx ;
+
+.my-connection{
+  height: 100%;
+  width: 100%;
+
+  display: flex;
+  overflow-x: auto; /* 水平滚动 */
+  white-space: nowrap; /* 内容不换行 */
+
+  border-radius: 10px;
+  box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.1);
+  margin: 4px;
+  box-sizing: border-box;
 }
+
+.my-case{
+  background-color: white;
+  box-sizing: border-box;
+}
+

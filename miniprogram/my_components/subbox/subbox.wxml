@@ -1,0 +1,8 @@
+<view class="subbox">
+	<view class="content">
+		<view class="switch-{{typeNum}}" wx:for="{{boxDada.unit}}" wx:key="index">
+			<view class="title">{{item.name}}</view>
+			<view class="badge"></view>
+		</view>
+	</view>
+</view>

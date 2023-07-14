@@ -1,0 +1,134 @@
+/* component/subbox.wxss */
+view{
+	margin: 0rpx;
+	padding: 0rpx;
+	box-sizing: border-box;
+}
+
+
+.subbox{
+	width: 300rpx;
+	height: 300rpx;
+	margin: 10rpx;
+	background-color: rgb(95, 81, 60);
+	border-radius: 8rpx;
+	box-shadow: 8rpx 8rpx 8rpx rgba(0, 0, 0, 0.5);/*阴影*/
+}
+
+.content{
+	width: 300rpx;
+	height: 300rpx;
+	padding: 10rpx 0rpx;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+  align-items: center; 
+}
+
+/* 6键 */
+.switch-6{
+	width: 30%;	
+	height: 50%;
+	padding: 20rpx 0rpx;
+	margin: 0rpx 4rpx;
+	border-right: 5rpx solid black;
+}
+.switch-6:nth-child(3){
+	border-right:none ;
+}
+.switch-6:last-child{
+	border-right:none ;
+}
+
+/* 5键 */
+.switch-5{
+	width: 30%;	
+	height: 50%;
+	padding: 20rpx 0rpx;
+	margin: 0rpx 4rpx;
+	border-right: 5rpx solid black;
+}
+.switch-5:nth-child(3){
+	border-right:none ;
+}
+.switch-5:last-child{
+	border-right:none ;
+}
+
+/* 4键 */
+.switch-4{
+	width: 48%;	
+	height: 50%;
+	padding: 20rpx 0rpx;
+	margin: 0rpx 4rpx;
+	border-right: 5rpx solid black;
+}
+.switch-4:nth-child(2){
+	border-right:none ;
+}
+.switch-4:last-child{
+	border-right:none ;
+}
+
+
+/* 3键 */
+.switch-3{
+	width: 29%;	
+	height: 100%;
+	padding: 80rpx 0rpx;
+	margin: 0rpx 4rpx;
+	border-right: 5rpx solid black;
+}
+.switch-3:last-child{
+	border-right:none ;
+}
+
+/* 2键 */
+.switch-2{
+	width: 48%;	
+	height: 100%;
+	padding: 80rpx 0rpx;
+	margin: 0rpx 4rpx;
+	border-right: 5rpx solid black;
+}
+.switch-2:last-child{
+	border-right:none ;
+}
+/* 1键 */
+.switch-1{
+	width: 100%;	
+	height: 100%;
+	padding: 80rpx 0rpx;
+	margin: 0rpx 4rpx;
+	border-right: 5rpx solid black;
+}
+.switch-1:last-child{
+	border-right:none ;
+}
+
+
+.title{
+  width:100%;
+	margin: 10;
+	font-size: 30rpx;
+	text-align: center;
+  color:white;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+}
+.badge{
+	margin: 0rpx auto;
+	margin-top: 10rpx;
+	width: 10rpx;
+	height: 10rpx;
+	border-radius: 10rpx;
+  background-color: white;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
+

@@ -1,111 +1,67 @@
-<view class="DrawerPage {{trackExist?'show':''}}">
-
-  <view class="cu-list menu sm-border padding-top-sm">
-    <view class="cu-item ">
-      <text class=" text-black text-lg ">窗帘名称：</text>
-      <view class="content my-card">
-        <input placeholder="请输入窗帘名称" name="input"></input>
-      </view>
-    </view>
-  </view>
-
-  <view>
-
-    <view class=" flex padding-sm justify-between">
-      <view class="flex text-lg align-center">轨道：</view>
-      <view class="cu-btn round bg-cyan" catchtap="showModal">添加导轨</view>
-    </view>
-
-    <view class="my-list menu my-card" wx:for="{{fromCurtain.case}}" wx:key="index1">
-      <view class="cu-item ">
-        <view class="content">
-          <text class="text-black">{{item.name}}</text>
-        </view>
-        <text class="text-grey text-sm">{{esc(item)}}</text>
-      </view>
-    </view>
-
-    <view class="my-list menu my-card ">
-      <view class="cu-item ">
-        <view class="content">
-          <text class="text-black">文本</text>
-        </view>
-      </view>
-    </view>
-
-  </view>
-
-</view>
-
-
-<view class="DrawerClose  {{trackExist ?'show':''}} " bindtap="hideModal">
-  <text class="cuIcon-pullright"></text>
-</view>
-<view scroll-y class="DrawerWindow {{trackExist ?'show':''}}">
-<!-- <view scroll-y class="DrawerWindow show"> -->
-
+<view scroll-y>
   <view class="cu-list menu sm-border">
 
     <view class="cu-item ">
-      <text class=" text-black text-lg ">类型：</text>
-      <radio-group class="block" change="RadioChange">
-        <view class="cu-form-group">
-          <view class="text">直轨</view>
-          <radio checked="{{radio==value?'true':''}}" value="1"></radio>
-          <view class="text">弯轨</view>
-          <radio checked="{{radio==value?'true':''}}" value="2"></radio>
-          <view class="text">其它</view>
-          <radio checked="{{radio==value?'true':''}}" value="3"></radio>
+      <text class=" text-black text-lg ">窗帘名称：</text>
+      <view class="content my-card">
+        <input placeholder="{{defaultNum.name}}" name="input" bindinput="trackNameInput"> value="{{formCurtain.name}}"</input>
+      </view>
+    </view>
+
+    <view class="cu-item">
+      <view class="title">类型：</view>
+      <picker value="{{formCurtain.type}}" range="{{typeList}}" bindchange="typeChange">
+        <view class="picker">
+          {{formCurtain.type>-1?typeList[formCurtain.type]:'选择导轨类型'}}
         </view>
-      </radio-group>
+      </picker>
     </view>
 
     <view class="cu-item ">
-      <text class=" text-black text-lg ">弯处：</text>
-      <radio-group class="block" change="RadioChange">
-        <view class="cu-form-group">
-          <view class="text">左端</view>
-          <radio checked="{{radio==value?'true':''}}" value="1"></radio>
-          <view class="text">右端</view>
-          <radio checked="{{radio==value?'true':''}}" value="2"></radio>
-          <view class="text">未定</view>
-          <radio checked="{{radio==value?'true':''}}" value="3"></radio>
-        </view>
-      </radio-group>
+      <canvas id="myCanvas" type="2d"></canvas>
     </view>
 
-    <view class="cu-item ">
+    <view class="cu-item">
       <text class=" text-black text-lg ">电机位置：</text>
-      <radio-group class="block" change="RadioChange">
+      <checkbox-group class="block" bindchange="electricalChange">
         <view class="cu-form-group">
+          <checkbox checked="true" value="0"></checkbox>
           <view class="text">左端</view>
-          <radio checked="{{radio==value?'true':''}}" value="1"></radio>
+          <checkbox checked="" value="1"></checkbox>
           <view class="text">右端</view>
-          <radio checked="{{radio==value?'true':''}}" value="2"></radio>
-          <view class="text">未定</view>
-          <radio checked="{{radio==value?'true':''}}" value="3"></radio>
         </view>
-      </radio-group>
+      </checkbox-group>
     </view>
 
     <view class="cu-item ">
-      <text class=" text-black text-lg ">尺寸：</text>
-        <view class="cu-form-group">
-          <input placeholder="请输入窗帘名称" name="input"></input>
-          <text class="">(米)</text>
-        </view>
+      <text class=" text-black text-lg ">主轨尺寸：</text>
+      <view class="cu-form-group">
+        <input placeholder="{{defaultNum.mainLineSize}}" name="input" value="{{formCurtain.mainLineSize}}" bindinput="mainLineInput"></input>
+        <text class="">(米)</text>
+      </view>
     </view>
 
-    <view class="cu-item ">
-      <text class=" text-black text-lg ">名称：</text>
-        <view class="cu-form-group">
-          <input placeholder="导轨名称" name="input"></input>
-        </view>
+    <view class="cu-item" wx:if="{{formCurtain.type==1||formCurtain.type==3}}">
+      <text class=" text-black text-lg ">左轨尺寸：</text>
+      <view class="cu-form-group">
+        <input placeholder="{{defaultNum.leftLineSize}}" name="input" value="{{formCurtain.leftLineSize}}" bindinput="leftLineInput"></input>
+        <text class="">(米)</text>
+      </view>
     </view>
+
+    <view class="cu-item" wx:if="{{formCurtain.type==2||formCurtain.type==3}}">
+      <text class=" text-black text-lg ">右轨尺寸：</text>
+      <view class="cu-form-group">
+        <input placeholder="{{defaultNum.rightLineSize}}" name="input" value="{{formCurtain.rightLineSize}}" bindinput="rightLineInput"></input>
+        <text class="">(米)</text>
+      </view>
+    </view>
+
 
     <view class="cu-item ">
       <view class="cu-btn round bg-cyan" catchtap="saveTrack">确定添加</view>
     </view>
+
 
   </view>
 

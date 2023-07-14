@@ -16,14 +16,15 @@ Page({
         name: "",
         unfold: false,
         place: [
+
         ],
-        curtain:[]
       },
       placeList: [],//位点列表，打开新增底盒时赋值
       exist: false,
       caseClazz: ["插座", "开关", "空面板"],
       fromplace: {
         name: "",
+        conneceIndex: -1,
         socket: 0,
         case: {
           id: 1,
@@ -36,6 +37,7 @@ Page({
     //新增开关所用数据
     addUnit: {
       exist: false,
+      controlDevice: true,
       name: "",
       device: "",
     },
@@ -43,12 +45,17 @@ Page({
     deviceList: [
       "玄关射灯", "客厅主灯", "客厅条灯1", "客厅条灯2", "餐厅灯主灯", "餐厅小灯", "厕所灯", "卧室主灯", "卧室次灯", "小度开关", "电视",
     ],
+    //开关列表列表
+
+    switchList: [
+
+    ],
     //插座类型列表
     socketList: [
       "16A空调插座", "网络插座", "五孔插座", "一开五孔插座", "电话插座", "五孔多功能插座", "电话网络插座", "双电话插座", "智能五孔插座",
     ],
     nullList: [
-      "空面板", 
+      "空面板",
     ],
     //区域列表所用数据
     roomList: [
@@ -56,7 +63,8 @@ Page({
         name: "玄关",
         unfold: false,
         place: [],
-        curtain:[],
+        connect: [
+        ]
       },
       {
         name: "卫生间",
@@ -65,58 +73,71 @@ Page({
           // 位点列表
           {
             name: "靠门",
-            case: [
-              // 盒子列表
+            connect: [
               {
-                id: 1,
-                way: "1",
-                unit: [
-                  // 开关列表
+                case: [
+                  // 盒子列表
                   {
-                    name: "照明开关",
+                    id: 1,
+                    way: "1",
+                    unit: [
+                      // 开关列表
+                      {
+                        name: "照明1",
+                      },
+                      {
+                        name: "照明2",
+                      },
+                      {
+                        name: "照明3",
+                      },
+                      {
+                        name: "照明4",
+                      },
+                    ],
                   },
                   {
-                    name: "照明开关",
-                  },
-                  {
-                    name: "照明开关",
-                  },
-                  {
-                    name: "照明开关",
+                    id: 2,
+                    way: "2",
+                    unit: [
+                      {
+                        name: "热水器",
+                      },
+                      {
+                        name: "镜灯",
+                      },
+                      {
+                        name: "情景",
+                      },
+                    ],
                   },
                 ],
+
               },
               {
-                id: 2,
-                way: "2",
-                unit: [
+                case: [
+                  // 盒子列表
                   {
-                    name: "热水器开关",
-                  },
-                  {
-                    name: "镜灯开关",
-                  },
-                  {
-                    name: "情景开关",
+                    id: 1,
+                    way: "1",
+                    unit: [
+                      {
+                        name: "开关5",
+                      },
+                      {
+                        name: "开关6",
+                      },
+                    ],
                   },
                 ],
-              },
+              }
+            ],
+            curtain: [
             ],
           },
         ],
-        curtain:[
-          {
-            name:'窗帘1',
-            case:[
-              {
-                name:"直导轨"
-              },
-              {
-                name:"双导轨"
-              }
-            ]
-          }
-        ],
+        curtain: [],
+
       },
       {
         name: "房间",
@@ -125,22 +146,26 @@ Page({
           // 位点列表
           {
             name: "靠门床头",
-            case: [
-              // 盒子列表
+            connect: [
               {
-                id: 1,
-                way: "1",
-                unit: [
-                  // 开关列表
+                case: [
+                  // 盒子列表
                   {
-                    name: "零火开关",
+                    id: 1,
+                    way: "1",
+                    unit: [
+                      // 开关列表
+                      {
+                        name: "零火",
 
-                  },
-                  {
-                    name: "零火开关",
-                  },
-                  {
-                    name: "零火开关",
+                      },
+                      {
+                        name: "零火",
+                      },
+                      {
+                        name: "零火",
+                      },
+                    ],
                   },
                 ],
               },
@@ -148,27 +173,32 @@ Page({
           },
           {
             name: "靠窗床头",
-            case: [
-              // 盒子列表
+            connect: [
               {
-                id: 1,
-                way: "3",
-                unit: [
-                  // 开关列表
+                case: [
+                  // 盒子列表
                   {
-                    name: "夜灯开关",
-                  },
-                  {
-                    name: "电视开关",
-                  },
-                  {
-                    name: "睡眠情景开关",
+                    id: 1,
+                    way: "3",
+                    unit: [
+                      // 开关列表
+                      {
+                        name: "夜灯",
+                      },
+                      {
+                        name: "电视",
+                      },
+                      {
+                        name: "睡眠情景",
+                      },
+                    ],
                   },
                 ],
               },
             ],
           },
         ],
+        curtain: [],
       },
     ],
   },
@@ -220,7 +250,7 @@ Page({
         name: this.data.addRoom.name,
         unfold: false,
         place: [],
-        curtain:[]
+        curtain: []
       };
       const updatedRoomList = [...this.data.roomList, newRoom];
       const add = this.data.addRoom;
@@ -266,16 +296,25 @@ Page({
   },
 
   // ==========跳转到增加窗帘页面部分==========
-  ToCurtain(e:any){
+  ToCurtain(e: any) {
     let room = e.currentTarget.dataset.room; // 要传递的数值
     wx.navigateTo({
       url: './curtain/curtain',
       events: {
         // 为指定事件添加一个监听器，获取被打开页面传送到当前页面的数据
         acceptDataFromOpenedPage: function (data: any) {
-          // let deviceList = this.data.deviceList;
-          
+          let room = data.data;
+          console.log("data:", data.data);
 
+          let roomList = this.data.roomList;
+          const index = roomList.findIndex(obj => obj.name === room.name);
+          if (index !== -1) {
+            roomList.splice(index, 1, room);
+          }
+          this.setData({
+            roomList: roomList
+          });
+          console.log(this.data.roomList);
         }.bind(this), // 使用 bind(this) 绑定正确的上下文
 
         someEvent: function (data: any) {
@@ -284,7 +323,7 @@ Page({
       },
       success: function (res) {
         // 通过eventChannel向被打开页面传送数据
-        res.eventChannel.emit('acceptDataFromOpenerPage',room )
+        res.eventChannel.emit('acceptDataFromOpenerPage', room)
       },
 
     });
@@ -293,12 +332,26 @@ Page({
   // ==========添加底盒弹窗部分==========
   // 打开新增底盒，传递数据
   openAddCase(e: any) {
-    const { room } = e.currentTarget.dataset;
+    const room = e.currentTarget.dataset.room;
     const add = this.data.addCase;
+
     const placeList = room.place.map((pla: { name: string }) => pla.name);
+
     add.exist = true;
     add.room = room;
     add.placeList = placeList;
+
+    const placeIndex = e.currentTarget.dataset.placeindex;
+    const connectIndex = e.currentTarget.dataset.connectindex;
+    //判断是从位点处打开新增底盒还是从房间处打开底盒
+    if (placeIndex != undefined && connectIndex != undefined) {
+      add.fromplace.name = add.placeList[placeIndex];
+      add.fromplace.conneceIndex = connectIndex;
+    };
+
+    console.log("placeIndex:",placeIndex,"connectIndex:",connectIndex);
+    
+
     this.setData({
       addCase: add,
     });
@@ -318,7 +371,6 @@ Page({
   },
   //关闭新增底盒底部弹窗
   closeAddCase() {
-    console.log("关闭addCase前:",this.data.addCase);
     let add = this.data.addCase;
     add.exist = false;
     add.room = {
@@ -330,7 +382,8 @@ Page({
     add.placeList = [];
     add.TabCur = 1;
     add.fromplace.name = "";
-    add.socket=0;
+    add.socket = 0;
+    add.fromplace.connectIndex = -1;
     add.fromplace.case = {
       id: -1,
       way: 1,
@@ -339,9 +392,8 @@ Page({
     };
     this.setData({
       addCase: { ...add }
-    });
-    console.log("关闭addCase后:",this.data.addCase);
 
+    });
   },
   //选择或新增位点
   addCaseropdownChange(e: any) {
@@ -366,38 +418,38 @@ Page({
 
   },
   //插座单选
-  socketChange(e:any){
+  socketChange(e: any) {
     const value = e.detail.value; // 获取选择的值
     let add = this.data.addCase;
-    let unit=[
+    let unit = [
       {
-        name:this.data.socketList[value]
+        name: this.data.socketList[value]
       }
     ];
-    add.fromplace.socket= value;
-    add.fromplace.case.unit=unit;
+    add.fromplace.socket = value;
+    add.fromplace.case.unit = unit;
     this.setData({
       addCase: add
     })
     console.log("插座:", this.data.addCase.fromplace);
   },
   //空面板单选
-  nullChange(e:any){
+  nullChange(e: any) {
     const value = e.detail.value; // 获取选择的值
     let add = this.data.addCase;
-    let unit=[
+    let unit = [
       {
-        name:this.data.nullList[value]
+        name: this.data.nullList[value]
       }
     ];
-    add.fromplace.socket= value;
-    add.fromplace.case.unit=unit;
+    add.fromplace.socket = value;
+    add.fromplace.case.unit = unit;
     this.setData({
       addCase: add
     })
     console.log("空面板:", this.data.addCase.fromplace);
   },
-    //新增开关
+  //新增开关
   addUunit() {
     let add = this.data.addUnit;
     add.exist = true;
@@ -416,6 +468,17 @@ Page({
       addUnit: add,
     });
   },
+  //多控选择控制器件还是开关
+  deviceAndeswitch(e: any) {
+    let add = this.data.addUnit;
+    add.controlDevice = e.detail.value;
+    add.device = "";
+    this.setData({
+      addUnit: add,
+    })
+    console.log(add.controlDevice);
+
+  },
   //新增开关的控制器件输入新增框
   addDeviceropdownChange(e: any) {
     const device = e.detail.value;
@@ -425,7 +488,16 @@ Page({
       addUnit: add,
     });
   },
-  //新增开关的开关名称输入框
+  // 新增开关的绑定开关单选框
+  addSwitchChange(e: any) {
+    const device = e.detail.value;
+    let add = this.data.addUnit;
+    add.device = this.data.switchList[device];
+    this.setData({
+      addUnit: add,
+    });
+  },
+  //新增开关的丝印输入框
   addUnitInput(e: any) {
     const add = this.data.addUnit;
     add.name = e.detail.value;
@@ -434,22 +506,31 @@ Page({
     });
   },
   //确认新增开关
-  confirmAddUunit(e: any) {
+  confirmAddUunit() {
     let add = this.data.addUnit;
     add.exist = false;
     // 遍历位点列表
     let deviceList = this.data.deviceList;
     let found = false;
 
-    for (let i = 0; i < deviceList.length; i++) {
-      if (deviceList[i] === add.device) {
-        // 已经存在的被控器件，不做处理
-        found = true;
+    if (add.controlDevice == true) {
+      for (let i = 0; i < deviceList.length; i++) {
+        if (deviceList[i] === add.device) {
+          // 已经存在的被控器件，不做处理
+          found = true;
+        }
       }
+      // 不存在的被控器件，则将器件加入器件列表
+      if (!found) {
+        deviceList.push(add.device);
+      }
+    } else if (add.device == "*待定*") {
+      add.name = add.name + "*";
     }
-    // 不存在的被控器件，则将器件加入器件列表
-    if (!found) {
-      deviceList.push(add.device);
+
+    //是否输入丝印，未输入则默认用器件名称
+    if (add.name == "") {
+      add.name = add.device
     }
 
     //加入开关
@@ -464,24 +545,47 @@ Page({
       deviceList: deviceList,
       addCase: add2,
     });
-
+    this.claseAddUunit();
+    this.upDateSubBox(add2.fromplace.case);
   },
   //确认添加底盒
   confirmAddCase() {
     let from = this.data.addCase.fromplace;
+
     // 遍历位点列表
     let place = this.data.addCase.room.place;
     let found = false;
 
+
     for (let i = 0; i < place.length; i++) {
       if (place[i].name === from.name) {
+        console.log("place[i].name:", place[i].name);
         // 在相同名称的位点下添加开关
-        let caes1 = {
-          id: place[i].case.length + 1,
-          way: from.case.way,
-          unit: from.case.unit
-        };
-        place[i].case.push(caes1);
+        let connect;
+        //判断是添加联排的底盒还是创建联排并创建底盒
+        if (from.conneceIndex == -1) {
+          // 创建联排并创建底盒
+          connect = [
+            {
+              case: [
+                {
+                  id: 1,
+                  way: from.case.way,
+                  unit: from.case.unit
+                }
+              ]
+            }
+          ];
+          place[i].connect = connect;
+        } else {
+          // 添加联排的底盒
+          let case1 = {
+            id: place[i].connect[from.conneceIndex].length + 1,
+            way: from.case.way,
+            unit: from.case.unit
+          };
+          place[i].connect[from.conneceIndex].case.push(case1);
+        }
         found = true;
       }
     }
@@ -489,12 +593,23 @@ Page({
     if (!found) {
       const newPlace = {
         name: from.name,
-        case: [
-        ]
+        connect: [
+          {
+            case: [
+              {
+                id: 1,
+                way: from.case.way,
+                unit: from.case.unit
+              }
+            ]
+          }
+        ],
       };
-      newPlace.case.push(from.case);
       place.push(newPlace);
     }
+
+    console.log("place:", place);
+
 
     //将roomList中的room替换为新的
     let room = this.data.addCase.room;
@@ -509,8 +624,45 @@ Page({
       roomList: roomList
     });
     this.closeAddCase();
-    console.log("room:",room);
+    console.log("room:", room);
+  },
 
+  /*一些供调用的方法*/
+  //通知自定义底盒更新数据
+  upDateSubBox(subabaoxdata:object) {
+    const component = this.selectComponent(".subbox");
+    if (component) {
+      component.updataBoxData(subabaoxdata);
+    }
+  },
+
+
+  /**
+    * 生命周期函数--监听页面加载
+    */
+  onLoad() {
+    //写入开关列表数据
+    const roomList = this.data.roomList;
+    const switchList = [];
+
+    switchList.push("*待定*")
+
+    roomList.forEach((room) => {
+      room.place.forEach((place) => {
+        place.connect.forEach((connection) => {
+          connection.case.forEach((box) => {
+            box.unit.forEach((unit) => {
+              switchList.push(unit.name);
+            });
+          });
+        });
+      });
+    });
+
+    // console.log("开关列表:", switchList);
+    this.setData({
+      switchList: switchList,
+    })
   }
 
 });
