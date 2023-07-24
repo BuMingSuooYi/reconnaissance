@@ -1,0 +1,213 @@
+<!-- 区域添加弹窗 -->
+<view class="cu-modal {{addRoom.exist ? 'show':''}}">
+  <view class="cu-dialog">
+    <view class="cu-bar bg-white justify-end">
+      <view class="content">新增区域</view>
+      <view class="action" catchtap="closeAddRoom">
+        <text class="cuIcon-close text-red"></text>
+      </view>
+    </view>
+    <view class="padding-xl">
+      <view class="cu-form-group">
+        <view class="title">名称</view>
+        <input placeholder="输入区域的名称" name="input" value="{{addRoom.name}}" bindinput="addRoomInput" data-index="{{index}}"></input>
+      </view>
+    </view>
+    <view class="cu-bar bg-white justify-end">
+      <button class="cu-btn bg-green" catchtap="confirmAddRoom">确定</button>
+    </view>
+  </view>
+</view>
+
+<!-- 底盒添加弹窗 -->
+<view class="cu-modal bottom-modal {{addCase.exist ? 'show':''}}">
+  <view class="cu-dialog ">
+    <view class="cu-list menu sm-border">
+
+      <!-- 右上角关闭 -->
+      <!-- <view class="action" catchtap="closeAddCase">
+        <text class="cuIcon-close text-red"></text>
+      </view> -->
+    </view>
+    <view class="padding-xl">
+      <view class="cu-bar bg-white">
+        <form>
+          <view class="flex cu-form-group" wx:if="{{addCase.fromplace.conneceIndex==-1}}">
+            <text>位置：</text>
+            <inputdropdown options="{{addCase.placeList}}" bindchange="addCaseropdownChange" value="{{addCase.fromplace.name}}"></inputdropdown>
+          </view>
+
+          <view class="bg-white nav">
+
+            <view class="flex text-center">
+              <view class="cu-item flex-sub {{index==addCase.TabCur?'text-blue cur':''}}" wx:for="{{addCase.caseClazz}}" wx:key="index" catchtap="tabSelect" data-id="{{index}}">
+                {{item}}
+              </view>
+            </view>
+
+            <view class=" my-tab " wx:if="{{addCase.TabCur==1}}">
+
+              <radio-group class="block cu-form-group" bindchange="radioChange">
+                <view class="title">取火方式：</view>
+                <view>
+                  <radio class="blue radio my-radio " checked="{{addCase.fromplace.case.way==1? 'true':''}}" value="1">零火</radio>
+                  <radio class="blue radio my-radio" checked="{{addCase.fromplace.case.way==2? 'true':''}}" value="2">单火</radio>
+                  <radio class="blue radio my-radio" checked="{{addCase.fromplace.case.way==3? 'true':''}}" value="3">电池</radio>
+                </view>
+              </radio-group>
+
+              <view class=".margin-left-sm ">请添加开关：</view>
+
+              <view class="padding cu-form-group">
+                <subbox  class="subbox" boxDada="{{addCase.fromplace.case}}"></subbox>
+                <view class="cu-tag line-gray padding-lg my-item " wx:key="index5" catchtap="addUunit">+</view>
+              </view>
+            </view>
+
+            <view class=" my-tab" wx:if="{{addCase.TabCur==0}}">
+              <view class=".margin-left-sm">请选择插座类型：</view>
+              <scroll-view scroll-y style="height: 400rpx;">
+                <radio-group bindchange="socketChange">
+                  <view class="cu-form-group" wx:for="{{socketList}}" wx:key="index6">
+                    <view class="title">{{item}}</view>
+                    <radio class="blue radio " checked="{{addCaes.fromplace.socket ==index?'true':''}}" value="{{index}}">
+                    </radio>
+                  </view>
+                </radio-group>
+              </scroll-view>
+            </view>
+
+            <view class=" my-tab" wx:if="{{addCase.TabCur==2}}">
+              <view class=".margin-left-sm">请选择面板类型：</view>
+              <scroll-view scroll-y style="height: 400rpx;">
+                <radio-group bindchange="nullChange">
+                  <view class="cu-form-group" wx:for="{{nullList}}" wx:key="index7">
+                    <view class="title">{{item}}</view>
+                    <radio class="blue radio " checked="{{addCaes.fromplace.socket ==index?'true':''}}" value="{{index}}">
+                    </radio>
+                  </view>
+                </radio-group>
+              </scroll-view>
+            </view>
+
+          </view>
+
+
+        </form>
+      </view>
+      <view class="flex justify-around">
+        <view class="bg-green padding-sm margin-xs radius text-gre " catchtap="confirmAddCase">确定</view>
+        <view class=" bg-grey padding-sm margin-xs radius text-gre" catchtap="closeAddCase">取消</view>
+      </view>
+
+    </view>
+  </view>
+</view>
+
+<!-- 底部弹窗的新增开关弹窗 -->
+<view class="cu-modal {{addUnit.exist? 'show':''}}">
+
+  <view class="cu-dialog">
+    <view class="cu-bar bg-white justify-end">
+      <view class="content">新增开关</view>
+      <view class="action" catchtap="claseAddUunit">
+        <text class="cuIcon-close text-red"></text>
+      </view>
+    </view>
+
+
+    <view class="padding-xl">
+
+      <view class="flex cu-form-group margin-top">
+        <switch class='orange radius' bindchange="deviceAndeswitch" checked="{{addUnit.controlDevice? 'true':''}}"></switch>
+      </view>
+
+      <view class="cu-form-group" wx:if="{{addUnit.controlDevice}}">
+        <text>控制器件：</text>
+        <inputdropdown options="{{deviceList}}" value="{{addUnit.device}}" bindchange="addDeviceropdownChange"></inputdropdown>
+      </view>
+
+      <view class="cu-list menu sm-border" wx:if="{{!addUnit.controlDevice}}">
+        <view class="cu-item">
+          <view class="title">开关：</view>
+          <picker value="{{addUnit.device}}" range="{{switchList}}" bindchange="addSwitchChange">
+            <view class="picker">
+              {{addUnit.device!=""?addUnit.device:'选择多控开关'}}
+            </view>
+          </picker>
+        </view>
+      </view>
+
+
+      <view class="cu-form-group">
+        <view class="title">丝印：</view>
+        <input placeholder="{{addUnit.device}}" name="input" value="{{addUnit.name}}" bindinput="addUnitInput"></input>
+      </view>
+
+    </view>
+
+    <view class="cu-bar bg-white justify-end">
+      <button class="cu-btn bg-green" catchtap="confirmAddUunit">确定</button>
+    </view>
+
+  </view>
+</view>
+
+<!-- 主页 -->
+<view class="padding-xl radius shadow bg-white">
+  <text class="cu-tag bg-cyan light">酒店</text>
+  <text class="text-left padding text-lg">{{caseSurvey.name}}</text>
+  <text class="radius fr text-bold text-xl">正在勘测：方型一</text>
+  <view class="text-gray">地址：{{caseSurvey.name}}{{caseSurvey.name}}{{caseSurvey.name}}...</view>
+</view>
+
+<view class="flex solid-bottom justify-between padding-sm">
+  <view class="text-lg text-bold ">从哪开始勘察？</view>
+  <view class="flex">
+    <view class='bg-blue cu-tag radius light padding-sm' catchtap="openAddRoom">+区域</view>
+    <view class='bg-blue cu-tag radius light padding-sm' catchtap="ToScence">+情景</view>
+  </view>
+</view>
+
+<view class="cu-list menu" wx:for="{{roomList}}" wx:for-item="room" wx:for-index="roomIndex" wx:key="">
+  <view class="cu-item" catchtap="toStretch" data-index="{{roomIndex}}" wx:key="">
+    <view class="content flex justify-between">
+      <text class="text-grey">{{room.name}}</text>
+    </view>
+    <view>
+      <view class='bg-blue cu-tag radius light padding-sm' catchtap="ToCurtain" data-room="{{room}}">+窗帘</view>
+      <view class='bg-blue cu-tag radius light padding-sm' catchtap="openAddCase" data-room="{{room}}">+底盒</view>
+      <text class="{{room.unfold? 'cuIcon-unfold' : 'cuIcon-right'}}"></text>
+    </view>
+  </view>
+  <view wx:if="{{room.unfold}}">
+    <!-- 窗帘部分 -->
+    <view wx:for="{{room.curtain}}" wx:for-item="curtain" wx:for-index="curtainIndex" wx:key="" catchtap="handleItemClick">
+      <view class='radius text-shadow text-black .margin-left-lg'>{{curtain.name}}
+        <view class="padding-xs solid .margin-xs">
+          <view>{{curtain.describe}}</view>
+        </view>
+      </view>
+    </view>
+    <!-- 联排部分 -->
+    <view wx:for="{{room.place}}" wx:for-item="place" wx:for-index="placeIndex" wx:key="" catchtap="handleItemClick">
+      <view class='radius text-shadow text-black .margin-left-lg'>{{place.name}}
+        <view class="my-connection" wx:for="{{place.connect}}" wx:for-item="connect" wx:for-index="connectIndex" wx:key="">
+          <text class='bg-blue cu-tag radius light' catchtap="openAddCase" data-room="{{room}}" data-placeIndex="{{placeIndex}}" data-connectIndex="{{connectIndex}}">+</text>
+          <!-- <view class="my-case" wx:for="{{connect.case}}" wx:for-item="case" wx:for-index="caseIndex" wx:key="">
+            <view class="" wx:for="{{case.unit}}" wx:for-item="unit" wx:for-index="unitIndex" wx:key="">
+              <view class="my-item">
+                <view class="my-text">{{unit.name}}</view>
+              </view>
+            </view>
+          </view> -->
+            <subbox class="subbox" wx:for="{{connect.case}}" wx:for-item="case" wx:for-index="caseIndex" wx:key=""  boxDada="{{case}}"></subbox>
+        </view>
+
+
+      </view>
+    </view>
+
+  </view>
+
+</view>

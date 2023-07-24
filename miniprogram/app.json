@@ -1,8 +1,9 @@
 {
   "pages": [
     "pages/index/index",
-    "pages/index/scence/scence",
-    "pages/index/curtain/curtain",
+    "pages/home/home",
+    "pages/home/scence/scence",
+    "pages/home/curtain/curtain",
     "pages/logs/logs"
   ],
   "window": {
