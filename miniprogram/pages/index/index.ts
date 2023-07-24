@@ -649,12 +649,25 @@ Page({
     * 生命周期函数--监听页面加载
     */
   onLoad() {
+    //数据请求
+    wx.request({
+      url: 'https://localhost:3000/users',
+      method: 'GET',
+      success: function (res) {
+        console.log("拿到了后端数据：",res.data);
+        // 处理 API 响应数据
+      },
+      fail: function (error) {
+        console.error("请求失败：",error);
+        // 处理请求失败的情况
+      }
+    });
+
+
     //写入开关列表数据
     const roomList = this.data.roomList;
     const switchList = [];
-
     switchList.push("*待定*")
-
     roomList.forEach((room) => {
       room.place.forEach((place) => {
         place.connect.forEach((connection) => {
