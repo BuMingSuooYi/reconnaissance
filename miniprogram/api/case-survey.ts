@@ -13,19 +13,32 @@ const getAll = () => {
 //按id获取
 const getById = (id:any) => {
   return request.request({
-    url: baseURL+"/getByID/"+id,
+    url: baseURL+"/"+id,
     data: id,
     method: 'GET',
   })
 }
+//按id删除
+const deleteById = (id:any) => {
+  return request.request({
+    url: baseURL+"/"+id,
+    // data: JSON.stringify(id),
+    method: 'DELETE',
+  })
+}
 //添加
-const addCaseSurvey=()=>{
-
+const addCaseSurvey=(data:any)=>{
+  return request.request({
+    url: baseURL,
+    data: data,
+    method: 'POST',
+  })
 }
 
 module.exports={
   getAll,
   getById,
+  deleteById,
   addCaseSurvey,
 }
 

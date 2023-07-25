@@ -1,12 +1,72 @@
 <!--pages/index/index.wxml-->
+<!-- 新增勘察实例弹窗 -->
+<view class="cu-modal {{addCaseSurvey.exist ? 'show':''}}">
+  <view class="cu-dialog">
+    <view class="cu-bar bg-white justify-end">
+      <view class="content">新增勘察</view>
+      <view class="action" catchtap="closeAddCaseSurvey">
+        <text class="cuIcon-close text-red"></text>
+      </view>
+    </view>
+    <view class="padding-xl">
+      <view class="cu-form-group">
+        <view class="title">地址</view>
+        <input placeholder="输入地址" name="CSname" value="{{addCaseSurvey.data.name}}" bindinput="CSnameInput"></input>
+      </view>
+      <view class="cu-form-group">
+        <view class="title">开关颜色偏好：</view>
+        <input placeholder="{{addCaseSurvey.defData.switchColorPreference}}" name="CScolor" value="{{addCaseSurvey.data.switchColorPreference}}" bindinput="CScolorInput"></input>
+      </view>
+      <view class="cu-form-group">
+        <view class="title">开关材质偏好：</view>
+        <input placeholder="{{addCaseSurvey.defData.switchMaterialPreference}}" name="CSmaterial" value="{{addCaseSurvey.data.switchMaterialPreference}}" bindinput="CSmaterialInput"></input>
+      </view>
+    </view>
+    <view class="cu-bar bg-white justify-end">
+      <button class="cu-btn bg-green" catchtap="confirmAddCaseSurvey">确定</button>
+    </view>
+  </view>
+</view>
+
+<!-- 删除实例弹窗 -->
+<view class="cu-modal {{deletaCaseSurvey.exist ? 'show':''}}">
+  <view class="cu-dialog">
+    <view class="cu-bar bg-white justify-end">
+      <view class="content">是否删除该实例</view>
+
+      <view class="action" catchtap="closeDeletCaseSurvey">
+        <text class="cuIcon-close text-green"></text>
+      </view>
+    </view>
+    <view class="padding-xl">
+      <view class="cu-form-group">
+        <text>实例：{{caseSurveys[deletaCaseSurvey.n].name}}</text>
+      </view>
+      <view class="cu-form-group">
+        <text>颜色偏好：{{caseSurveys[deletaCaseSurvey.n].switchColorPreference}}</text>
+      </view>
+      <view class="cu-form-group">
+        <text>材质偏好：{{caseSurveys[deletaCaseSurvey.n].switchMaterialPreference}}</text>
+      </view>
+    </view>
+    <view class="cu-bar bg-white justify-end">
+      <button class="cu-btn bg-red" catchtap="confirmDeletCaseSurvey">删除</button>
+    </view>
+  </view>
+</view>
+
+<!-- 主页面 -->
 <view class="cu-bar bg-white solid-bottom margin-top">
   <view class="action">
     <text class="cuIcon-title text-orange "></text> 勘测列表
   </view>
+  <view class="action">
+    <button class="cu-btn bg-green my_button" bindtap="addCaseSurvey">新增</button>
+  </view>
 </view>
 
 <view class="cu-list menu sm-border">
-  <view class="cu-item arrow" wx:for="{{caseSurveys}}" wx:for-item="caseSurvey" wx:for-index="caseSurveysIndex" wx:key="id" bindtap="toHome" data-n="{{caseSurveysIndex}}">
+  <view class="cu-item arrow" wx:for="{{caseSurveys}}" wx:for-item="caseSurvey" wx:for-index="caseSurveysIndex" wx:key="id" bindtap="toHome" data-n="{{caseSurveysIndex}}" bindlongpress="deleteCaseSurvey">
     <text class="text-grey">{{caseSurvey.name}}</text>
   </view>
 </view>

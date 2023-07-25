@@ -6,6 +6,8 @@ Page({
   data: {
     //实例
     caseSurvey:{},
+    //区域
+    
     //新增区域所用数据
     addRoom: {
       exist: false,
