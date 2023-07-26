@@ -1,25 +1,25 @@
 const request=require('../utils/request')
 
 //模块基础URL
-const baseURL='/case-survey';
+const baseURL='/case-survey-area';
 // 获取全部
-const getAll = () => {
+const getAll = (sid:number) => {
   return request.request({
-    url: baseURL,
-    data: null,
+    url: baseURL+"/"+sid,
+    data: sid,
     method: 'GET',
   })
 }
 //按id获取
-const getById = (id:any) => {
+const getDataById = (id:number) => {
   return request.request({
-    url: baseURL+"/"+id,
+    url: baseURL+"/getOneDate/"+id,
     data: id,
     method: 'GET',
   })
 }
 //按id删除
-const deleteById = (id:any) => {
+const deleteById = (id:number) => {
   return request.request({
     url: baseURL+"/"+id,
     // data: JSON.stringify(id),
@@ -27,7 +27,7 @@ const deleteById = (id:any) => {
   })
 }
 //添加
-const addCaseSurvey=(data:any)=>{
+const add=(data:any)=>{
   return request.request({
     url: baseURL,
     data: data,
@@ -35,10 +35,10 @@ const addCaseSurvey=(data:any)=>{
   })
 }
 
-export const  caseSurvey={
+export const  Area={
   getAll,
-  getById,
+  getDataById,
   deleteById,
-  addCaseSurvey,
+  add,
 };
 

@@ -1,18 +1,87 @@
 // index.ts
 // 获取应用实例
-const app = getApp<IAppOption>();
+import { Area } from "../../api/case-survey-area";
+import { Site } from "../../api/case-survey-site";
+import { MyUtil } from "../../utils/myUtil"
 
 Page({
   data: {
-    //实例
-    caseSurvey:{},
-    //区域
-    
+    //实例数据
+    caseSurvey: {},
+    //区域数据
+    areas: [],
     //新增区域所用数据
-    addRoom: {
+    addArea: {
       exist: false,
-      name: "",
+      data: {
+        surveyId: -1,
+        name: "",
+      }
     },
+    //展开的区域具体数据
+    unfoldArea: {
+      index: -1,//展开区域的areas索引
+      areaId: -1,//展开区域的id
+      sitesData: [
+        // 每个位点的数据结构
+        // {
+        //   siteData: {
+        //   },
+        //   nodeData: {
+        //     // curtainData:[],//窗帘数据先不管
+        //     T: [],//非联排的底盒
+        //     N: {},//联排的底盒   // 联排号：[底盒1、底盒2]
+        //   }
+        // }
+      ]
+
+    },
+
+    //新增节点所用数据
+    addNode: {
+      surveyId: -1,
+      areaId: -1,
+      exist: false,
+      allSites: [],//所在区域的全部位点
+      allSmartControls: [],//所在实例全部智能被控器件
+      allSwitchs: [],//所在区域开关
+
+      //用于新增位点的数据
+      newSiteData: {
+        name: "",
+        surveyId: -1,
+        areaId: -1,
+      },
+      //用于新增节点的数据
+      newNodeData: {
+        typeKey: "",
+        powerType: -1,
+        rawFrameSymbol: 0,
+        surveyId: -1,
+        areaId: -1,
+        siteId: -1,
+      },
+    },
+
+    //用于新增智能被控器件的数据
+    newSmartControlData: {
+      name: "",
+      typeKey: "curtain",
+      surveyId: -1,
+      areaId: -1,
+    },
+
+    //用于批量新增开关的数据
+    newSwitchs: [
+      // {
+      //   name: "",
+      //   typeKey: "switch",
+      //   bindAppId: -1,
+      //   nodeId: -1,
+      //   surveyId: -1,
+      //   areaId: -1,
+      // }
+    ],
     //新增底盒所用数据
     addCase: {
       TabCur: 1, // 默认是开关页
@@ -210,63 +279,81 @@ Page({
   // 区域列表的伸缩
   toStretch(e: any) {
     const index = e.currentTarget.dataset.index;
-    const list = this.data.roomList;
-    const unfold = list[index].unfold;
-    list[index].unfold = !unfold;
-    this.setData({
-      roomList: list,
-    });
+    let unfoldArea = this.data.unfoldArea;
+
+    if (index == unfoldArea.index) {
+      //重复点击，缩略
+      unfoldArea.index = -1;
+      this.setData({
+        unfoldArea: unfoldArea
+      })
+    } else {
+      //切换展开区域
+      unfoldArea.index = index;
+      unfoldArea.areaId = this.data.areas[index].id;
+      Area.getDataById(unfoldArea.areaId).then((res: any) => {
+        if (res.statusCode == 200) {
+          // 请求成功,关闭新增弹窗，并重新加载实例列表
+          unfoldArea.sitesData = res.data;
+          this.setData({
+            unfoldArea: unfoldArea
+          })
+
+          console.log("unfoldArea=", this.data.unfoldArea);
+
+        } else {
+          // 请求失败的处理
+        }
+      }).catch((res: any) => { })
+    };
   },
 
   // ==========添加区域弹窗部分==========
-  closeAddRoom() {
+  closeAddArea() {
     // 关闭模态框
-    const add = this.data.addRoom;
+    const add = this.data.addArea;
     add.exist = false;
-    add.name = "";
+    add.data.name = "";
     this.setData({
       addRoom: add,
     });
   },
 
-  openAddRoom() {
+  openAddArea() {
     // 打开模态框
-    const add = this.data.addRoom;
+    const add = this.data.addArea;
     add.exist = true;
     this.setData({
-      addRoom: add,
+      addArea: add,
     });
   },
 
-  addRoomInput(e: any) {
+  addAreaInput(e: any) {
     // 更新输入框的值
-    const add = this.data.addRoom;
-    add.name = e.detail.value;
+    const add = this.data.addArea;
+    add.data.name = e.detail.value;
     this.setData({
-      addRoom: add,
+      addArea: add,
     });
   },
 
-  confirmAddRoom() {
+  confirmAddArea() {
     // 添加一个新的区域
-    if (this.data.addRoom.name !== "") {
-      const newRoom = {
-        name: this.data.addRoom.name,
-        unfold: false,
-        place: [],
-        curtain: []
-      };
-      const updatedRoomList = [...this.data.roomList, newRoom];
-      const add = this.data.addRoom;
-      add.exist = false;
-      add.name = "";
-      this.setData({
-        roomList: updatedRoomList,
-        addRoom: add,
-      });
-    } else {
-      // 提示填写添加区域名称
+    if (this.data.addArea.data.name.trim() == "") {
+      MyUtil.hint("区域名称不能为空");
+      return;
     }
+    //发送新增请求
+    Area.add(this.data.addArea.data).then((res: any) => {
+      console.log(res.statusCode);
+      if (res.statusCode == 201) {
+        // 请求成功,关闭新增弹窗，并重新加载区域列表
+        this.closeAddArea();
+        this.getAreas();
+      } else {
+        // 请求失败的处理
+      }
+    }).catch((res: any) => { })
   },
 
   // ==========跳转到添加情景页面==========
@@ -284,7 +371,6 @@ Page({
           this.setData({
             deviceList: deviceList
           })
-
         }.bind(this), // 使用 bind(this) 绑定正确的上下文
 
         someEvent: function (data: any) {
@@ -335,6 +421,39 @@ Page({
 
   // ==========添加底盒弹窗部分==========
   // 打开新增底盒，传递数据
+  openAddNode(e: any) {
+    const area = e.currentTarget.dataset.area;
+
+    //赋值surveyId和areaId确定哪个区域添加底盒
+    let addNode = this.data.addNode;
+    addNode.surveyId = this.data.caseSurvey.id;
+    addNode.areaId = area.id;
+
+    addNode.exist = true;
+    //获取该区域全部位点
+    Site.getAll(addNode.areaId).then((res: any) => {
+      if (res.statusCode == 200) {
+        addNode.allSites = res.data;
+        // 请求成功的处理
+
+      } else {
+        // 请求失败的处理
+      }
+      
+    }).catch((res: any) => { })
+
+    const siteIndex = e.currentTarget.dataset.placeindex;
+    //判断是从区域打开还是从位点打开
+    if (siteIndex != undefined) {//从位点打开
+      //赋值位点
+      addNode.newNodeData.siteId = addNode.allSites[siteIndex];
+    }
+
+    this.setData({
+      addNode: addNode
+    })
+  },
+
   openAddCase(e: any) {
     const room = e.currentTarget.dataset.room;
     const add = this.data.addCase;
@@ -356,25 +475,45 @@ Page({
 
     console.log("fromplace.conneceIndex:", this.data.addCase.fromplace.conneceIndex);
 
-
     this.setData({
       addCase: add,
     });
   },
 
-  // 选择标签
-  tabSelect(e: any) {
-    const { id } = e.currentTarget.dataset;
-    const add = this.data.addCase;
-    if (id != add.TabCur) {
-      add.TabCur = id;
-      add.fromplace.case.unit = [];
-      this.setData({
-        addCase: add,
-      });
-    }
-  },
   //关闭新增底盒底部弹窗
+  closeAddNode() {
+    let addNode={
+      surveyId: -1,
+      areaId: -1,
+      exist: false,
+      allSites: [],//所在区域的全部位点
+      allSmartControls: [],//所在实例全部智能被控器件
+      allSwitchs: [],//所在区域开关
+
+      //用于新增位点的数据
+      newSiteData: {
+        name: "",
+        surveyId: -1,
+        areaId: -1,
+      },
+      //用于新增节点的数据
+      newNodeData: {
+        typeKey: "",
+        powerType: -1,
+        rawFrameSymbol: 0,
+        surveyId: -1,
+        areaId: -1,
+        siteId: -1,
+      },
+    }
+
+    this.setData({
+      addNode: addNode
+    })
+
+  },
+
+
   closeAddCase() {
     let addCase = {
       TabCur: 1, // 默认是开关页
@@ -407,6 +546,20 @@ Page({
     console.log("关闭新增底盒", this.data.addCase.fromplace.conneceIndex);
 
   },
+
+  // 选择标签
+  tabSelect(e: any) {
+    const { id } = e.currentTarget.dataset;
+    const add = this.data.addCase;
+    if (id != add.TabCur) {
+      add.TabCur = id;
+      add.fromplace.case.unit = [];
+      this.setData({
+        addCase: add,
+      });
+    }
+  },
+
   //选择或新增位点
   addCaseropdownChange(e: any) {
     const placeName = e.detail.value;
@@ -648,6 +801,27 @@ Page({
     }
   },
 
+  //通过勘察实例获取区域列表
+  getAreas() {
+    const sid = parseInt(this.data.caseSurvey.id);
+    Area.getAll(sid).then((res: any) => {
+      console.log("res.statusCode:", res.statusCode);
+      if (res.statusCode == 200) {
+        //请求成功，重新初始化区域列表、编辑区域表单
+        let addArea = this.data.addArea;
+        addArea.data.surveyId = sid,
+          this.setData({
+            areas: res.data,
+            addArea: addArea,
+          })
+        console.log("区域：", this.data.areas);
+
+      } else {
+        // 请求失败的处理
+      }
+    }).catch((res: any) => { })
+  },
+
 
   /**
     * 生命周期函数--监听页面加载
@@ -659,13 +833,16 @@ Page({
     // // 监听acceptDataFromOpenerPage事件，获取上一页面通过eventChannel传送到当前页面的数据
     if (eventChannel) {
       eventChannel.on('OpencaseSurvey', function (data) {
-        console.log("收到数据：",data);
-        caseSurvey=data;
+        console.log("收到数据：", data);
+        caseSurvey = data;
       })
     }
     this.setData({
-      caseSurvey:caseSurvey,
+      caseSurvey: caseSurvey,
     });
+
+    //通过勘察实例获取区域信息
+    this.getAreas();
 
     //写入开关列表数据
     const roomList = this.data.roomList;

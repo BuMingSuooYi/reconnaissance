@@ -1,7 +1,8 @@
 // pages/index/index.ts
 //引入勘测实例API
-const caseSurvey = require('../../api/case-survey');
-
+// const caseSurvey = require('../../api/case-survey');
+import { caseSurvey } from '../../api/case-survey';
+import {MyUtil} from '../../utils/myUtil';
 
 Page({
 
@@ -112,12 +113,7 @@ Page({
     let data = this.data.addCaseSurvey.data;
     //地址非空处理
     if (data.name.trim() == "") {
-      wx.showToast({
-        title: '地址不能为空', // 提示的内容
-        icon: 'none', // 提示的图标，可选值：'success', 'loading', 'none'
-        duration: 2000, // 提示的延迟时间，单位为毫秒，设置为0时提示不会自动消失
-        mask: true, // 是否显示透明蒙层，防止触摸穿透，默认为 false
-      })
+      MyUtil.hint("地址不能为空");
       return;
     };
     // 默认值处理

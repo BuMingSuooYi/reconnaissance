@@ -5,8 +5,26 @@ Component({
       type: Object,
       value: {
         id: 1,
-        way: "1",
-        unit: [],
+        name: "不知道",
+        typeKey: "box.switch",
+        powerType: 1,
+        rawFrameSymbol: 1,
+        rawFrameSpuId: 0,
+        surveyId: 21,
+        areaId: 1,
+        siteId: 1,
+        apps: [
+          // {
+          //   "id": 2,
+          //   "name": "房间灯开关",
+          //   "typeKey": "switch",
+          //   "bindAppId": 1,
+          //   "bindSceneId": 0,
+          //   "nodeId": 1,
+          //   "areaId": 2,
+          //   "surveyId": 21
+          // }
+        ],
       },
     },
     //用于指定自定义组件的模式：0展示，1编辑，2删除
@@ -25,7 +43,7 @@ Component({
     //更新组件数据
     updataBoxData(boxDada: Object) {
       this.setData({
-        typeNum: boxDada.unit.length,
+        typeNum: boxDada.apps.length,
         boxDada: boxDada,
       })
       console.log("收到了通知,更新了数据");
@@ -82,7 +100,7 @@ Component({
   lifetimes: {
     attached: function () {
       // data数据初始化
-      let num = this.data.boxDada.unit.length;
+      let num = this.data.boxDada.apps.length;
 
       this.setData({
         typeNum: num,
