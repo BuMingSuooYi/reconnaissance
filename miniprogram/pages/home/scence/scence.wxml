@@ -1,16 +1,16 @@
-
 <view class="DrawerPage {{deviceExist?'show':''}}">
-  <view class="bg-white flex padding-sm text-lg align-center ">
-    存在的情景
+
+  <view class="bg-white flex padding-sm text-lg align-center " wx:if="{{secences.length>0}}">
+    存在的情景：
   </view>
-  <view class="flex-container bg-white">
-    <view class="my-scence light bg-grey" wx:for="{{scenceList}}" wx:key="index1">
+  <scroll-view class="flex-container bg-white" scroll-y style="height: 20%" wx:if="{{secences.length>0}}">
+    <view class="my-scence light bg-grey" wx:for="{{secences}}" wx:key="index1">
       <view class="text-black">
-        {{item.name}}
+        {{item.scene.name}}
       </view>
-      <view class="padding-sm  my-tag text-red">×</view>
+      <view class="padding-left-sm  my-tag text-red">×</view>
     </view>
-  </view>
+  </scroll-view>
 
 
 
@@ -19,33 +19,52 @@
     <view class="cu-btn round bg-cyan" catchtap="showModal">去设置状态</view>
   </view>
 
-  <checkbox-group class="block" bindchange="selectDevice" wx:if="{{deviceList.length>0}}">
-    <view class="cu-form-group" wx:for="{{deviceList}}" wx:key="index2">
-      <view class="title">{{item}}</view>
-      <checkbox class='round blue' checked="" value="{{index}}" ></checkbox>
-      <!-- {{indexList.includes(index.toString())? 'true':''}} -->
-    </view>
-  </checkbox-group>
-  
+
+  <scroll-view scroll-y class="flex-container" style="height: 100%">
+    <checkbox-group class="block conIdList" bindchange="selectDevice">
+      <view wx:for="{{smartControls}}" wx:for-item="area" wx:for-index="areaIndex" wx:key="index2">
+
+        <view class='radius text-shadow text-black padding-xs '>{{area.area.name}}</view>
+
+        <view class="cu-form-group" wx:for="{{area.control}}" wx:for-item="con" wx:for-index="conIndex" wx:key="con.id">
+          <view class="title">{{con.name}}</view>
+          <checkbox class='round blue' checked="" value="{{con.id}}"></checkbox>
+          <!-- {{indexList.includes(index.toString())? 'true':''}} -->
+        </view>
+      </view>
+    </checkbox-group>
+  </scroll-view>
+
+
 </view>
 
 
-<scroll-view scroll-y >
-</scroll-view>
+
 <view class="DrawerClose  {{deviceExist ?'show':''}} " bindtap="hideModal">
   <text class="cuIcon-pullright"></text>
 </view>
-<scroll-view scroll-y class="DrawerWindow {{deviceExist ?'show':''}}">
+<scroll-view scroll-y class="DrawerWindow {{deviceExist ?'show':''}}" style="height: 100%">
   <view class="bg-white flex padding-sm justify-between solid">
-    <input placeholder="输入情景的名称" name="input" value="{{scenceI.scenceName}}" bindinput="scenceInput"></input>
+    <input placeholder="输入情景的名称" name="input" value="{{scenceI.name}}" bindinput="scenceInput"></input>
     <view class="cu-btn round bg-green" catchtap="comfirmScence">保存情景</view>
   </view>
 
+  <view class="cu-list menu sm-border">
+      <view class="cu-item">
+        <view class="title">场景区域：</view>
+        <picker value="{{scenceI.area.name}}" range="{{areas}}" range-key="{{'name'}}" bindchange="addareaChange">
+          <view class="picker">
+            {{scenceI.area.name!=""?scenceI.area.name:'应用区域'}}
+          </view>
+        </picker>
+      </view>
+    </view>
+
   <view class="cu-list menu card-menu margin-top-xl margin-bottom-xl shadow-lg">
-    <view class="arrow cu-form-group" wx:for="{{scenceI.selectedDevice}}" wx:key="index3">
+    <view class="arrow cu-form-group" wx:for="{{scenceI.apps}}" wx:key="index3">
 
       <view class="title">{{item.name}}</view>
-      <switch catchchange="switchOnOff" class="{{item.state?'checked':''}}" checked="{{item.state}}" data-index="{{index}}"></switch>
+      <switch catchchange="switchOnOff" checked="{{item.actionKey=='turnOn' ? 'checked':''}}" data-index="{{index}}"></switch>
     </view>
   </view>
 </scroll-view>

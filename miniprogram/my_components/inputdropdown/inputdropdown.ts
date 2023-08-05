@@ -16,6 +16,8 @@ Component({
   },
   methods: {
     toggleOptions() {
+      console.log(this.data);
+      
       this.setData({
         showOptions: !this.data.showOptions,
       });
@@ -23,10 +25,10 @@ Component({
     selectOption(e:any) {
       const option = e.currentTarget.dataset.option;
       this.setData({
-        selectedOption: option,
-        inputValue: option,
+        selectedOption: option.name,
+        inputValue: option.name,
       });
-      this.triggerEvent('change', { value: option });
+      this.triggerEvent('change', { value: option.name });
     },
     inputChange(e:any) {
       const value = e.detail.value;
@@ -37,5 +39,9 @@ Component({
       });
       this.triggerEvent('change', { value });
     },
+  },
+
+  attached: function () {
+    console.log('传入的数据：', this);
   },
 });

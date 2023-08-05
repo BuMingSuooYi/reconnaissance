@@ -98,17 +98,26 @@
 .DrawerPage .cu-bar.tabbar .action {
   flex: initial;
 }
+
 /* myWXSS */
 .flex-container {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: wrap; /* 让子组件按行排列，并在不够的时候换行 */
+  border: 3rpx solid #ccc;
+  margin: 0rpx 15rpx 15rpx 15rpx;
+  border-radius: 15rpx;
 }
-.my-scence{
-    width: 200rpx;
-    height: 100rpx;
-    border-radius: 15rpx; /* 添加圆角样式 */
-    margin: 10rpx;
-    display: flex; /* 设置为弹性布局 */
-  justify-content: center; /* 在主轴上居中对齐 */
-  align-items: center; /* 在交叉轴上居中对齐 */
+
+.my-scence {
+  width: 200rpx;
+  height: 100rpx;
+  /* 添加圆角样式 */
+  border-radius: 15rpx;
+  margin: 10rpx;
+  /* 设置为弹性布局 */
+  display: flex;
+  /* 在主轴上居中对齐 */
+  justify-content: center;
+  /* 在交叉轴上居中对齐 */
+  align-items: center;
 }

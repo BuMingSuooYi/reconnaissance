@@ -1,6 +1,6 @@
 <view class="subbox {{shakeClass}}" bindtap="click" bindlongpress="longPress">
 	<view class="content">
-		<view class="switch-{{typeNum}}" wx:for="{{boxDada.apps}}" wx:key="index">
+		<view class="switch-{{typeNum}}" wx:for="{{boxDada}}" wx:key="index">
 			<view class="title">{{item.name}}</view>
 			<view class="badge-{{item.bindAppId!=0?'white':'red'}}"></view>
 		</view>

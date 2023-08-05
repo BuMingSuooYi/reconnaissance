@@ -2,30 +2,19 @@ Component({
   properties: {
     // 这里定义了innerText属性，属性值可以在组件使用时指定
     boxDada: {
-      type: Object,
-      value: {
-        id: 1,
-        name: "不知道",
-        typeKey: "box.switch",
-        powerType: 1,
-        rawFrameSymbol: 1,
-        rawFrameSpuId: 0,
-        surveyId: 21,
-        areaId: 1,
-        siteId: 1,
-        apps: [
-          // {
-          //   "id": 2,
-          //   "name": "房间灯开关",
-          //   "typeKey": "switch",
-          //   "bindAppId": 1,
-          //   "bindSceneId": 0,
-          //   "nodeId": 1,
-          //   "areaId": 2,
-          //   "surveyId": 21
-          // }
-        ],
-      },
+      type: Array,
+      value: [
+        // {
+        //   "id": 2,
+        //   "name": "房间灯开关",
+        //   "typeKey": "switch",
+        //   "bindAppId": 1,
+        //   "bindSceneId": 0,
+        //   "nodeId": 1,
+        //   "areaId": 2,
+        //   "surveyId": 21
+        // }
+      ],
     },
     //用于指定自定义组件的模式：0展示，1编辑，2删除
     pattern: {
@@ -43,11 +32,10 @@ Component({
     //更新组件数据
     updataBoxData(boxDada: Object) {
       this.setData({
-        typeNum: boxDada.apps.length,
+        typeNum: boxDada.length,
         boxDada: boxDada,
       })
       console.log("收到了通知,更新了数据");
-
     },
     //改变组件状态
     changePattern(pattern: Number) {
@@ -79,15 +67,23 @@ Component({
         this.triggerEvent('click', { value: boxData });
       }
     },
-    //长按事件,出现删除角标
+    //长按事件,出现或消失删除角标
     longPress() {
-      this.changePattern(2);
-      console.log("出现删除角标");
+      if (this.data.pattern == 2) {
+        this.changePattern(0);
+        console.log("消失删除角标");
+      }
+      else {
+        this.changePattern(2);
+        console.log("出现删除角标");
+      }
       //抖动动画
+      this.setData({
+        shakeClass: ""
+      });
       this.setData({
         shakeClass: "shakeClass"
       });
-
     },
     //供绑定的删除角标点击事件
     delete() {
@@ -100,7 +96,7 @@ Component({
   lifetimes: {
     attached: function () {
       // data数据初始化
-      let num = this.data.boxDada.apps.length;
+      let num = this.data.boxDada.length;
 
       this.setData({
         typeNum: num,

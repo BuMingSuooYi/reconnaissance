@@ -2,6 +2,6 @@
   <input class="select-input" value="{{value}}" bindinput="inputChange" placeholder="选择或输入" />
 
   <scroll-view class="options" scroll-y="{{true}}" style="height: 200rpx;" wx:if="{{showOptions}}">
-  <view class="option" wx:for="{{options}}" wx:key="index" data-option="{{item}}" bindtap="selectOption">{{item}}</view>
+  <view class="option" wx:for="{{options}}" wx:key="index" data-option="{{item}}" bindtap="selectOption">{{item.name}}</view>
 </scroll-view>
 </view>

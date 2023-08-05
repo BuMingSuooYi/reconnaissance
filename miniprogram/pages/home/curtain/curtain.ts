@@ -1,3 +1,6 @@
+import { MyUtil } from "../../../utils/myUtil";
+import { Curtain } from "../../../api/case-survey-curtain";
+
 // pages/index/curtain/curtain.ts
 Page({
 
@@ -5,28 +8,20 @@ Page({
    * 页面的初始数据
    */
   data: {
-    //传来的房间
-    room: [],
+    //传来的基础数据，sId和area
+    baseData: {},
     //表单待填
     formCurtain: {
-      name: "",
-      type: 0,//默认直导轨
-      electromotor: [0],
-      mainLineSize: "",
-      leftLineSize: "",
-      rightLineSize: "",
-    },
-    //类型选择
-    typeList: [
-      '直轨道', "左 L 轨", "右 L 轨", "U型轨",
-    ],
-    //默认数据
-    defaultNum: {
+      surveyId:Number,
+      areaId:Number,
       name: "默认窗帘名称",
-      mainLineSize: "3.14",
-      leftLineSize: "1",
-      rightLineSize: "1",
+      electromotor: [0],
+      mainLength: 3000,
+      leftLength: 0,
+      rightLength: 0,
+      remark: "",
     },
+
     //绘制数据
     paintingData: {
       //画布宽高
@@ -36,7 +31,7 @@ Page({
       //以主轨道为准，放缩绘图
       startX: 50,
       startY: 30,
-      ratioY: 63.7,//按照x向默认值3.14m对应200，得到y向1m对应63.7
+      ratioY: 0.063,//按照x向默认值3.14m对应200，得到y向1m对应63.7
       lineWidth: 5,//绘制线条宽度
 
       electromotorSize: 30,//绘制电机大小
@@ -51,70 +46,37 @@ Page({
 
   },
 
-
-  //窗帘名称输入框
-  trackNameInput(e: any) {
-    let formCurtain = this.data.formCurtain;
-    formCurtain.name = e.detail.value;
-    this.setData({
-      formCurtain: formCurtain,
-    })
-    console.log(this.data.formCurtain.name);
-  },
-  //类型下拉框选择
-  typeChange(e: any) {
-
-    let formCurtain = this.data.formCurtain;
-    formCurtain.type = e.detail.value;
-    this.setData({
-      formCurtain: formCurtain,
-    })
-    this.drawMainLane();
-
-  },
   //返回绘制轨道和电机的参数
-  getDrawParameter(data: Number) {
-    data = Number(data);
+  getDrawParameter() {
     let formCurtain = this.data.formCurtain;
     let paintingData = this.data.paintingData;
     //获取主轨道尺寸
-    let mainLineSize;
-    if (isNaN(mainLineSize = parseFloat(formCurtain.mainLineSize))) {
-      formCurtain.mainLineSize = "";
-      mainLineSize = Number(this.data.defaultNum.mainLineSize);
-    }
+    let mainLength = formCurtain.mainLength;
     //重新计算y向的比例尺
-    paintingData.ratioY = 200 / mainLineSize;
-    //获取左轨道尺寸
-    let leftLineSize;
-    if (isNaN(leftLineSize = parseFloat(formCurtain.leftLineSize))) {
-      formCurtain.leftLineSize = "";
-      leftLineSize = Number(this.data.defaultNum.leftLineSize);
-    };
-    //获取右轨道尺寸
-    let rightLineSize;
-    if (isNaN(rightLineSize = parseFloat(formCurtain.rightLineSize))) {
-      formCurtain.rightLineSize = "";
-      rightLineSize = Number(this.data.defaultNum.rightLineSize);
-    }
+    paintingData.ratioY = 200 / mainLength;
 
-    //比例
+    //获取左轨道尺寸
+    let leftLength = formCurtain.leftLength;
+    //获取右轨道尺寸
+    let rightLength = formCurtain.rightLength;
+
+    //整体比例
     let scaling = 1;
-    let left = paintingData.startY + leftLineSize * paintingData.ratioY;
-    let right = paintingData.startY + rightLineSize * paintingData.ratioY;
+    let left = paintingData.startY + leftLength * paintingData.ratioY;
+    let right = paintingData.startY + rightLength * paintingData.ratioY;
     let max = Math.max(left, right);
     if (max > paintingData.height)
       scaling = 0.8 * paintingData.height / max;
 
     //要返回的数据      
     let typeData = {
-      lineWidth: paintingData.lineWidth * scaling / 67 * paintingData.ratioY,
-      electromotorSize: paintingData.electromotorSize * scaling / 67 * paintingData.ratioY,
+      lineWidth: paintingData.lineWidth * scaling,
+      electromotorSize: paintingData.electromotorSize * scaling,
       lane: [
         {
           x1: paintingData.startX,
           y1: paintingData.startY,
-          x2: (paintingData.startX + mainLineSize * paintingData.ratioY) * scaling,
+          x2: paintingData.startX + (mainLength * paintingData.ratioY) * scaling,
           y2: paintingData.startY
         },
         //无副轨道
@@ -122,75 +84,38 @@ Page({
       //左，右电机的位置
       electromotorSite: [
         { x: paintingData.startX, y: paintingData.startY },
-        { x: (paintingData.startX + mainLineSize * paintingData.ratioY) * scaling, y: paintingData.startY },
+        { x: paintingData.startX + (mainLength * paintingData.ratioY) * scaling, y: paintingData.startY },
       ],
     };
+
     let leftLane;
     let rightLane;
-    switch (data) {
-      case 0:
-        console.log("0数据");
-        return typeData;
-      case 1:
-        console.log("1数据");
-        //得到左轨道绘图数据
-        leftLane = {
-          x1: paintingData.startX,
-          y1: paintingData.startY,
-          x2: paintingData.startX,
-          y2: (paintingData.startY + leftLineSize * paintingData.ratioY) * scaling,
-        }
-        typeData.lane.push(leftLane);
-        typeData.electromotorSite[0] = {
-          x: typeData.lane[1].x2,
-          y: typeData.lane[1].y2,
-        }
-        return typeData;
-      case 2:
-        console.log("2数据");
-        //得到右轨道绘图数据
-        rightLane = {
-          x1: typeData.lane[0].x2,
-          y1: paintingData.startY,
-          x2: typeData.lane[0].x2,
-          y2: (paintingData.startY + rightLineSize * paintingData.ratioY) * scaling,
-        }
-        typeData.lane.push(rightLane);
-        typeData.electromotorSite[1] = {
-          x: typeData.lane[1].x2,
-          y: typeData.lane[1].y2,
-        }
-        return typeData;
-      case 3:
-        console.log("3数据");
-        //得到左轨道绘图数据
-        leftLane = {
-          x1: paintingData.startX,
-          y1: paintingData.startY,
-          x2: paintingData.startX,
-          y2: (paintingData.startY + leftLineSize * paintingData.ratioY) * scaling,
-        }
-        typeData.lane.push(leftLane);
-        typeData.electromotorSite[0] = {
-          x: typeData.lane[1].x2,
-          y: typeData.lane[1].y2,
-        }
-        //得到右轨道绘图数据
-        rightLane = {
-          x1: typeData.lane[0].x2,
-          y1: paintingData.startY,
-          x2: typeData.lane[0].x2,
-          y2: (paintingData.startY + rightLineSize * paintingData.ratioY) * scaling,
-        }
-        typeData.lane.push(rightLane);
-        typeData.electromotorSite[1] = {
-          x: typeData.lane[2].x2,
-          y: typeData.lane[2].y2,
-        }
-        return typeData;
-      default:
-        return typeData;
+
+    //得到左轨道绘图数据
+    leftLane = {
+      x1: paintingData.startX,
+      y1: paintingData.startY,
+      x2: paintingData.startX,
+      y2: paintingData.startY + (leftLength * paintingData.ratioY) * scaling,
     }
+    typeData.lane.push(leftLane);
+    typeData.electromotorSite[0] = {
+      x: typeData.lane[1].x2,
+      y: typeData.lane[1].y2,
+    }
+    //得到右轨道绘图数据
+    rightLane = {
+      x1: typeData.lane[0].x2,
+      y1: paintingData.startY,
+      x2: typeData.lane[0].x2,
+      y2: paintingData.startY + (rightLength * paintingData.ratioY) * scaling,
+    }
+    typeData.lane.push(rightLane);
+    typeData.electromotorSite[1] = {
+      x: typeData.lane[2].x2,
+      y: typeData.lane[2].y2,
+    }
+    return typeData;
   },
 
   //绘制轨道和电机
@@ -206,7 +131,7 @@ Page({
         ctx.clearRect(0, 0, canvas.width, canvas.height)
 
         //获取绘图数据
-        let drawData = this.getDrawParameter(this.data.formCurtain.type);
+        let drawData = this.getDrawParameter();
         console.log(drawData);
 
         //画轨道
@@ -243,6 +168,23 @@ Page({
         }
       })
   },
+    //窗帘名称输入框
+    trackNameInput(e: any) {
+      let formCurtain = this.data.formCurtain;
+      formCurtain.name = e.detail.value;
+      this.setData({
+        formCurtain: formCurtain,
+      })
+      console.log(this.data.formCurtain.name);
+    },
+    remarkNameInput(e: any) {
+      let formCurtain = this.data.formCurtain;
+      formCurtain.remark = e.detail.value;
+      this.setData({
+        formCurtain: formCurtain,
+      })
+      console.log(this.data.formCurtain.remark);
+    },
   //电机位置复选框
   electricalChange(e: any) {
     console.log(e.detail.value);
@@ -264,97 +206,60 @@ Page({
   //主轨道尺寸输入框
   mainLineInput(e: any) {
     let formCurtain = this.data.formCurtain;
-    formCurtain.mainLineSize = e.detail.value;
+    formCurtain.mainLength =parseInt(e.detail.value);
+    console.log("formCurtain.mainLength:::",formCurtain.mainLength);
+    
     this.setData({
       formCurtain: formCurtain,
     });
     this.drawMainLane();
-    console.log("formCurtain.mainLineSize:", this.data.formCurtain.mainLineSize);
+    console.log("formCurtain.mainLength:", this.data.formCurtain.mainLength);
   },
   //左轨道尺寸输入框
   leftLineInput(e: any) {
     let formCurtain = this.data.formCurtain;
-    formCurtain.leftLineSize = e.detail.value;
+    formCurtain.leftLength = e.detail.value;
     this.setData({
       formCurtain: formCurtain,
     });
     this.drawMainLane();
-    console.log("formCurtain.leftLineSize:", this.data.formCurtain.leftLineSize);
+    console.log("formCurtain.leftLength:", this.data.formCurtain.leftLength);
   },
   //右轨道尺寸输入框
   rightLineInput(e: any) {
     let formCurtain = this.data.formCurtain;
-    formCurtain.rightLineSize = e.detail.value;
+    formCurtain.rightLength = e.detail.value;
     this.setData({
       formCurtain: formCurtain,
     });
     this.drawMainLane();
-    console.log("formCurtain.rightLineSize:", this.data.formCurtain.rightLineSize);
+    console.log("formCurtain.rightLength:", this.data.formCurtain.rightLength);
   },
   //确认添加窗帘按钮
   saveTrack() {
     let formCurtain = this.data.formCurtain;
-    let defaultNum = this.data.defaultNum;
-    if (formCurtain.name == "")
-      formCurtain.name = defaultNum.name;
-    let type = Number(formCurtain.type);
-    let describe;
-    switch (type) {
-      case 0:
-        if (formCurtain.mainLineSize == "")
-          formCurtain.mainLineSize = defaultNum.mainLineSize;
-        describe = "直导轨，" + formCurtain.mainLineSize;
-        break;
-      case 1:
-        if (formCurtain.mainLineSize == "")
-          formCurtain.mainLineSize = defaultNum.mainLineSize;
-        if (formCurtain.leftLineSize == "")
-          formCurtain.leftLineSize = defaultNum.leftLineSize;
-        describe = "左L导轨，" + formCurtain.mainLineSize +
-          "，" + formCurtain.leftLineSize;
-        break;
-      case 2:
-        if (formCurtain.mainLineSize == "")
-          formCurtain.mainLineSize = defaultNum.mainLineSize;
-        if (formCurtain.rightLineSize == "")
-          formCurtain.rightLineSize = defaultNum.rightLineSize;
-        describe = "右L导轨，" + formCurtain.mainLineSize +
-          "，" + formCurtain.rightLineSize;
-        break;
-      case 3:
-        if (formCurtain.mainLineSize == "")
-          formCurtain.mainLineSize = defaultNum.mainLineSize;
-        if (formCurtain.leftLineSize == "")
-          formCurtain.leftLineSize = defaultNum.leftLineSize;
-        if (formCurtain.rightLineSize == "")
-          formCurtain.rightLineSize = defaultNum.rightLineSize;
-        describe = "U导轨，" + formCurtain.mainLineSize +
-          "，" + formCurtain.leftLineSize +
-          "，" + formCurtain.rightLineSize;
-        break;
-      default:
-        if (formCurtain.mainLineSize == "")
-          formCurtain.mainLineSize = defaultNum.mainLineSize;
-        break;
+    if ((formCurtain.mainLength == 0 || formCurtain.mainLength == undefined) && formCurtain.remark == "") {
+      MyUtil.hint("特殊轨道 请填写备注");
+      return;
     }
-    for (let i = 0; i < formCurtain.electromotor.length; i++) {
-      if (formCurtain.electromotor[i] == 0)
-        describe = describe + "，左电机"
-      if (formCurtain.electromotor[i] == 1)
-        describe = describe + "，右电机"
-    }
-    formCurtain.describe = describe;
-    let room = this.data.room;
-    room.curtain.push(formCurtain);
-    this.setData({
-      room: room,
-    })
-    //跳转主页
-    wx.navigateBack({
-      delta: 1, // 返回的页面数，1 表示返回上一个页面
-      success: function () {
+    console.log("formCurtain:",formCurtain);
+    Curtain.add(formCurtain).then((res: any) => {
+      if (res.statusCode == 201) {
+        formCurtain = res.data;
+        console.log("创建窗帘完成返回：", res.data);
+
+        //跳转主页
+        wx.navigateBack({
+          delta: 1, // 返回的页面数，1 表示返回上一个页面
+          success: function () {
+          }
+        });
+
+      } else {
+        // 请求失败的处理
       }
-    });
+    }).catch((res: any) => { })
+
   },
 
 
@@ -362,26 +267,25 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad() {
-    let room;
-    let defaultNum = this.data.defaultNum;
+    let baseData;
+    let formCurtain = this.data.formCurtain
     const eventChannel = this.getOpenerEventChannel()
     // // 监听acceptDataFromOpenerPage事件，获取上一页面通过eventChannel传送到当前页面的数据
     if (eventChannel) {
       eventChannel.on('acceptDataFromOpenerPage', function (data) {
-        room = data;
-        if (room.curtain == undefined) {
-          room.curtain = [];
-        };
-        defaultNum.name = data.name + "窗帘" + (data.curtain.length + 1);
-        
+        baseData = data;
+        console.log(baseData);
+        formCurtain.surveyId=baseData.surveyId;
+        formCurtain.areaId=baseData.area.id;
+        formCurtain.name = baseData.area.name + "窗帘";
       })
     }
 
     this.setData({
-      room: room,
-      defaultNum: defaultNum,
+      baseData: baseData,
+      formCurtain:formCurtain
     });
-    console.log(this.data.room);
+    console.log(this.data.baseData);
   },
 
   /**
@@ -407,6 +311,8 @@ Page({
         ctx.scale(dpr, dpr)
         console.log("画布大小：", canvas.width, "*", canvas.height);
       });
+    console.log("第一次画轨道");
+
     this.drawMainLane();
   },
 
@@ -428,12 +334,10 @@ Page({
    * 生命周期函数--监听页面卸载
    */
   onUnload() {
-    let room = this.data.room;
-    room.unfold = true;
+    let formCurtain = this.data.formCurtain;
     const eventChannel = this.getOpenerEventChannel()
-    eventChannel.emit('acceptDataFromOpenedPage', { data: this.data.room });
+    eventChannel.emit('acceptDataFromOpenedPage', { areaId: formCurtain.areaId });
     console.log("页面被卸载了");
-
   },
 
   /**

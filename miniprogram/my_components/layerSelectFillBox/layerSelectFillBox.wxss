@@ -1,0 +1,6 @@
+/* component/layerSelectFillBox/layerSelectFillBox.wxss */
+.container{
+	display: flex;
+  justify-content: center; /* 子组件在主轴上水平居中 */
+  align-items: center; /* 子组件在交叉轴上垂直居中 */
+}

@@ -1,5 +1,7 @@
 {
   "usingComponents": {
+    "dropdowninput":"../../my_components/layerSelectFillBox/dropdowninput/dropdowninput",
+    "layerSelectFillBox":"../../my_components/layerSelectFillBox/layerSelectFillBox",
     "inputdropdown": "../../my_components/inputdropdown/inputdropdown",
     "subbox":"../../my_components/subbox/subbox"
   }

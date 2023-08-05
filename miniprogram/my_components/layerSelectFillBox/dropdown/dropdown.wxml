@@ -1,0 +1,11 @@
+<view class="dropdown" >
+  <view class="selected-option" bindtap="toggleOptions">
+    {{ selectedOption.name || '选择区域' }}
+    <!-- <image class="arrow" src="/images/arrow-down.png"></image> -->
+  </view>
+  <view class="options" wx:if="{{ showOptions }}" style="{{ dropdownStyle }}">
+    <block wx:for="{{ options }}" wx:key="{{ index }}">
+      <view class="option" bindtap="selectOption" data-option="{{ item }}">{{ item.name }}</view>
+    </block>
+  </view>
+</view>
