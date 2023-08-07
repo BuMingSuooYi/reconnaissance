@@ -2,7 +2,7 @@
 // 封装微信请求方法
 const req = (params:any) => {
   const apiUrl = "http://localhost:3000";// 公共的请求地址
-  // const apiUrl = "http://192.168.50.198:3000";// 公共的请求地址
+  // const apiUrl = "http://192.168.50.199:3000";// 公共的请求地址
   let url = params.url;
   let data = params.data;
   let method = params.method;
