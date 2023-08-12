@@ -36,10 +36,19 @@ const add=(data:any)=>{
   })
 }
 
+const updata=(data:any)=>{
+  return request.request({
+    url: baseURL,
+    data: data,
+    method: 'PATCH',
+  });
+}
+
 export const  Area={
   getAll,
   getDataById,
   deleteById,
   add,
+  updata,
 };
 

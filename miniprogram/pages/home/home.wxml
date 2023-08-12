@@ -19,6 +19,61 @@
   </view>
 </view>
 
+<!-- 区域删除弹窗 -->
+<view class="cu-modal {{deletaArea.exist ? 'show':''}}">
+  <view class="cu-dialog">
+    <view class="cu-bar bg-white justify-end">
+      <view class="content">删除或修改区域</view>
+
+      <view class="action" catchtap="closeDeletArea">
+        <text class="cuIcon-close text-green"></text>
+      </view>
+    </view>
+    <view class="padding-xl">
+      <view class="cu-form-group">
+        <text>区域：</text>
+        <input placeholder="{{deletaArea.defindName}}" name="inputAreaName" value="{{deletaArea.name}}" bindinput="deleteAreaInput"></input>
+      </view>
+    </view>
+    <view class="flex solid-bottom padding justify-around">
+      <view class="bg-red padding-sm radius" catchtap="confirmDeletArea">删除</view>
+      <view class="bg-green padding-sm radius" catchtap="confirmRedactArea">修改</view>
+    </view>
+  </view>
+</view>
+
+<!-- 窗帘删除弹窗 -->
+<view class="cu-modal {{deletCurtain.exist ? 'show':''}}">
+  <view class="cu-dialog">
+    <view class="cu-bar bg-white justify-end">
+      <view class="content">是否删除窗帘</view>
+
+      <view class="action" catchtap="closeDeletCurtain">
+        <text class="cuIcon-close text-green"></text>
+      </view>
+    </view>
+    <view class="padding-xl">
+      <view class="cu-form-group">
+        <text>{{deletCurtain.curtain.name}}</text>
+      </view>
+      <view class="cu-form-group">
+        <view>
+          {{deletCurtain.curtain.mainLength==0? "":" 主轨("+deletCurtain.curtain.mainLength+")"}}
+          {{deletCurtain.curtain.leftLength==0? "":" 左轨("+deletCurtain.curtain.leftLength+")"}}
+          {{deletCurtain.curtain.rightLength==0? "":" 右轨("+deletCurtain.curtain.rightLength+")"}}
+          {{deletCurtain.curtain.leftCurtainMotorNodeId!=0? " 左电机 ":""}}
+          {{deletCurtain.curtain.rightCurtainMotorNodeId!=0? " 右电机 ":""}}
+        </view>
+      </view>
+
+
+    </view>
+    <view class="flex solid-bottom padding justify-around">
+      <view class="bg-red padding-sm radius" catchtap="confirmDeletcurtain">删除</view>
+    </view>
+  </view>
+</view>
+
 <!-- 底盒添加弹窗 -->
 <view class="cu-modal bottom-modal {{addNode.exist ? 'show':''}}">
   <view class="cu-dialog ">
@@ -52,9 +107,9 @@
               <radio-group class="block cu-form-group" bindchange="radioChange">
                 <view class="title">取火方式：</view>
                 <view>
-                  <radio class="blue radio my-radio " checked="{{addNode.newNodeData.powerType==1? 'true':''}}" value="1">零火</radio>
-                  <radio class="blue radio my-radio" checked="{{addNode.newNodeData.powerType==2? 'true':''}}" value="2">单火</radio>
-                  <radio class="blue radio my-radio" checked="{{addNode.newNodeData.powerType==3? 'true':''}}" value="3">电池</radio>
+                  <radio class=" blue" checked="{{addNode.newNodeData.powerType==1? 'true':''}}" value="1">零火</radio>
+                  <radio class=" blue" checked="{{addNode.newNodeData.powerType==2? 'true':''}}" value="2">单火</radio>
+                  <radio class=" blue" checked="{{addNode.newNodeData.powerType==3? 'true':''}}" value="3">电池</radio>
                 </view>
               </radio-group>
 
@@ -62,7 +117,7 @@
 
               <!-- 点击出现添加app -->
               <view class="padding cu-form-group">
-                <subbox class="subbox" boxDada="{{newSwitchs.newSwitchList}}"></subbox>
+                <subbox class="subbox" boxDada="{{newSwitchs}}" catchappclick="deleteSwitch" pattern="1"></subbox>
                 <view class="cu-tag line-gray padding-lg my-item " wx:key="index5" catchtap="addUunit">+</view>
               </view>
             </view>
@@ -121,18 +176,18 @@
 
     <view class="padding-xl">
 
-      <view class="flex cu-form-group margin-top">
+      <!-- <view class="flex cu-form-group margin-top">
         <switch class='orange radius' bindchange="deviceAndeswitch" checked="{{addNode.controlDevice? 'true':''}}"></switch>
-      </view>
+      </view> -->
 
-      <!-- <view class="cu-form-group" wx:if="{{addNode.controlDevice}}">
+      <!-- <view class="cu-form-group">
         <text>控制器件：</text>
         <inputdropdown options="{{addNode.allSmartControls}}" value="{{controlledApp.name}}" bindchange="addDeviceropdownChange"></inputdropdown>
       </view> -->
-      <layerSelectFillBox class="layerSelect" wx:if="{{addNode.controlDevice}}" title="被控：  " dataSet1="{{areas}}" dataSet2="{{addNode.allSmartControls}}" bind:conf1="wxml_getAreaSmartControl" bind:conf2="smartControlchange"></layerSelectFillBox>
+      <layerSelectFillBox class="layerSelect" title="被控：  " dataSet1="{{areas}}" dataSet2="{{addNode.allSmartControls}}" bind:conf1="wxml_getAreaSmartControl" bind:conf2="smartControlchange"></layerSelectFillBox>
 
 
-      <view class="cu-list menu sm-border" wx:if="{{!addNode.controlDevice}}">
+      <!-- <view class="cu-list menu sm-border" wx:if="{{!addNode.controlDevice}}">
         <view class="cu-item">
           <view class="title">开关：</view>
           <picker value="{{controlledApp.name}}" range="{{addNode.allSwitchs}}" range-key="{{'name'}}" bindchange="addSwitchChange">
@@ -141,7 +196,7 @@
             </view>
           </picker>
         </view>
-      </view>
+      </view> -->
 
 
       <view class="cu-form-group">
@@ -162,7 +217,7 @@
 <view class="padding-xl radius shadow bg-white">
   <text class="cu-tag bg-cyan light">酒店</text>
   <text class="text-left padding text-lg">{{caseSurvey.name}}</text>
-  <text class="radius fr text-bold text-xl">正在勘测：方型一</text>
+  <text class="radius fr text-bold text-xl">正在勘测：方案一</text>
   <view class="text-gray">地址：{{caseSurvey.name}}{{caseSurvey.name}}{{caseSurvey.name}}...</view>
 </view>
 
@@ -175,7 +230,7 @@
 </view>
 
 <view class="cu-list menu" wx:for="{{areas}}" wx:for-item="area" wx:for-index="areaIndex" wx:key="area.id">
-  <view class="cu-item" catchtap="xml_toStretch" data-areaId="{{area.id}}" wx:key="">
+  <view class="cu-item" catchtap="xml_toStretch" data-area="{{area}}" wx:key="" bindlongpress="openDeletArea">
     <view class="content flex justify-between">
       <text class="text-grey">{{area.name}}</text>
     </view>
@@ -187,13 +242,14 @@
   </view>
   <view wx:if="{{unfoldArea.areaId==area.id}}">
     <!-- 窗帘部分 -->
-    <view wx:for="{{unfoldArea.data.curtainData}}" wx:for-item="curtainData" wx:for-index="curtainIndex" wx:key="" catchtap="handleItemClick">
-      <view class='radius text-shadow text-black .margin-left-lg'>{{curtainData.curtain.name}} (mm) {{ curtainData.curtain.remark==""?"":"("+curtainData.curtain.remark+")"}}
+    <view wx:for="{{unfoldArea.data.curtainData}}" wx:for-item="curtainData" wx:for-index="curtainIndex" wx:key="">
+      <view class='radius text-shadow text-black .margin-left-lg mycurtain' bindlongpress="openDeletCurtain" data-curtain="{{curtainData}}" catchtap="clackCurtain">
+        {{curtainData.curtain.name}} (mm) {{ curtainData.curtain.remark==""?"":"("+curtainData.curtain.remark+")"}}
         <view class="padding-xs solid .margin-xs">
           <view>
-            {{curtainData.curtain.mainLength==0? "":" 主轨："+curtainData.curtain.mainLength}}
-            {{curtainData.curtain.leftLength==0? "":" 左轨："+curtainData.curtain.leftLength}}
-            {{curtainData.curtain.rightLength==0? "":" 右轨："+curtainData.curtain.rightLength}}
+            {{curtainData.curtain.mainLength==0? "":" 主轨("+curtainData.curtain.mainLength+")"}}
+            {{curtainData.curtain.leftLength==0? "":" 左轨("+curtainData.curtain.leftLength+")"}}
+            {{curtainData.curtain.rightLength==0? "":" 右轨("+curtainData.curtain.rightLength+")"}}
             {{curtainData.leftCurtainMotorNod.node? " 左电机 ":""}}
             {{curtainData.rightCurtainMotorNode.node? " 右电机 ":""}}
           </view>
@@ -207,14 +263,14 @@
         <view class="my-connection" wx:for="{{site.NodeData.T}}" wx:for-item="Tnode" wx:for-index="TnodeIndex" wx:key="Tnode.id">
           <text class='bg-blue cu-tag radius light' catchtap="openAddNode" data-area="{{area}}" data-siteIndex="{{siteIndex}}" data-node="{{Tnode[0]}}">+</text>
           <view wx:for="{{Tnode}}" wx:for-item="node" wx:for-index="" wx:key="">
-            <subbox class="subbox" boxDada="{{node.apps}}"></subbox>
+            <subbox class="subbox" boxDada="{{node}}" catchclick="redactNode" catchdelete="deleteNode" pattern="{{0}}" data-node="{{node}}"></subbox>
           </view>
         </view>
 
         <!-- 非联排部分 -->
         <view class="my-connection" wx:for="{{site.NodeData.N}}" wx:for-item="Nnode" wx:for-index="NnodeIndex" wx:key="Nnode.id">
           <text class='bg-blue cu-tag radius light' catchtap="openAddNode" data-area="{{area}}" data-siteIndex="{{siteIndex}}" data-node="{{Nnode}}">+</text>
-          <subbox class="subbox" boxDada="{{Nnode.apps}}"></subbox>
+          <subbox class="subbox" boxDada="{{Nnode}}" catchclick="redactNode" catchdelete="deleteNode" pattern="{{0}}" data-node="{{node}}"></subbox>
         </view>
       </view>
     </view>

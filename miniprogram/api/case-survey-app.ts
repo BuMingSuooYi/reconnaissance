@@ -10,6 +10,16 @@ const getAll = (sid:number) => {
     method: 'GET',
   })
 }
+
+//获取区域列表下的全部智能控件（包括窗帘）（不包括情景，用于创建情景）
+const getSmartControlByAreas = (data: any) => {
+  return request.request({
+    url: baseURL+"/findSmartControlByAreas",
+    data: data,
+    method: 'POST',
+  })
+}
+
 //按区域获取智能被控器件
 const findByAreaAndsmartControl=(aid:number)=>{
   return request.request({
@@ -56,6 +66,7 @@ const createApps=(data:any)=>{
 
 export const  MyApp={
   getAll,
+  getSmartControlByAreas,
   findByAreaAndsmartControl,
   getDataById,
   deleteById,

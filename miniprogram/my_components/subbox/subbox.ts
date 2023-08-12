@@ -2,9 +2,10 @@ Component({
   properties: {
     // 这里定义了innerText属性，属性值可以在组件使用时指定
     boxDada: {
-      type: Array,
-      value: [
-        // {
+      type: Object,
+      value: {
+        // name:,
+        // apps:{
         //   "id": 2,
         //   "name": "房间灯开关",
         //   "typeKey": "switch",
@@ -14,7 +15,8 @@ Component({
         //   "areaId": 2,
         //   "surveyId": 21
         // }
-      ],
+
+      }
     },
     //用于指定自定义组件的模式：0展示，1编辑，2删除
     pattern: {
@@ -30,12 +32,11 @@ Component({
   },
   methods: {
     //更新组件数据
-    updataBoxData(boxDada: Object) {
+    updataBoxData() {
       this.setData({
-        typeNum: boxDada.length,
-        boxDada: boxDada,
+        typeNum: this.data.boxDada.apps.length,
       })
-      console.log("收到了通知,更新了数据");
+      console.log("收到了通知,更新了数据,",this.data.typeNum);
     },
     //改变组件状态
     changePattern(pattern: Number) {
@@ -58,37 +59,55 @@ Component({
           break;
       }
     },
+    // app按键的绑定事件
+    appclick(e: any) {
+      console.log("模式：", this.data.pattern);
+      //在编辑模式时点击事件才有效，主要提供编辑app
+      if (this, this.data.pattern == 1) {
+        console.log("app数据", e.target.dataset.item);
+        this.triggerEvent('appclick', { value: e.target.dataset.item });
+      }
+    },
+
     //供绑定的点击事件
     click() {
       //在展示模式时点击事件才有效，主要提供编辑的绑定
       if (this, this.data.pattern == 0) {
         let boxData = this.data.boxDada;
-        console.log("触发底盒点击事件,可用click绑定事件");
+        console.log("点击事件触发");
         this.triggerEvent('click', { value: boxData });
       }
     },
     //长按事件,出现或消失删除角标
     longPress() {
-      if (this.data.pattern == 2) {
+      if (this.data.pattern == 2 && this.data.pattern != 1) {
         this.changePattern(0);
         console.log("消失删除角标");
+        //抖动动画
+        this.setData({
+          shakeClass: ""
+        });
+        this.setData({
+          shakeClass: "shakeClass"
+        });
       }
-      else {
+      else if (this.data.pattern == 0 && this.data.pattern != 1) {
         this.changePattern(2);
         console.log("出现删除角标");
+        //抖动动画
+        this.setData({
+          shakeClass: ""
+        });
+        this.setData({
+          shakeClass: "shakeClass"
+        });
       }
-      //抖动动画
-      this.setData({
-        shakeClass: ""
-      });
-      this.setData({
-        shakeClass: "shakeClass"
-      });
     },
     //供绑定的删除角标点击事件
     delete() {
+      let boxData = this.data.boxDada;
       console.log("触发底盒点击事件,可用delete绑定事件");
-
+      this.triggerEvent('delete', { value: boxData });
     }
   },
 
@@ -96,7 +115,7 @@ Component({
   lifetimes: {
     attached: function () {
       // data数据初始化
-      let num = this.data.boxDada.length;
+      let num = this.data.boxDada.apps.length;
 
       this.setData({
         typeNum: num,

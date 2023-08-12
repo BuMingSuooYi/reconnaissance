@@ -1,5 +1,6 @@
 // pages/index/scence/scence.ts
 import { Scence } from "../../../api/case_survey_scence";
+import { MyApp } from "../../../api/case-survey-app";
 import { MyUtil } from "../../../utils/myUtil"
 
 
@@ -9,13 +10,14 @@ Page({
    * 页面的初始数据
    */
   data: {
-    areas: [],
+    surveyData: {},
     //情景数据列表
     secences: [],
     //实例中全部的区域及其被控器件
     smartControls: [],
     //实例中提取出来的被控器件
     conList: [],
+    redact: false,//是否处于编辑情景
     scenceI: {//正在编写的情景
       name: "",
       apps: [
@@ -23,12 +25,33 @@ Page({
       ],
       surveyId: 0,
       areaId: 0,
-      area:{
-        name:""
+      area: {
+        name: ""
       },//用于显示
     },
 
   },
+  //点击编辑情景
+  clickScence(e: any) {
+    let scence = e.target.dataset.scence;
+    console.log("点击了（", scence, "）");
+    let scenceI = this.data.scenceI;
+    scenceI.apps = scence.apps
+
+    this.setData({
+      redact: true,
+      scenceI: scenceI,
+      deviceExist: true,
+    })
+  },
+  //删除情景
+  deleteScence(e: any) {
+    let scence = e.target.dataset.scence;
+    console.log("点击了删除（", scence.scene.name, "）");
+    MyUtil.hint("删除情景，待开发")
+  },
+
+
   //复选
   selectDevice(e: any) {
     let conIdList = e.detail.value;
@@ -72,6 +95,7 @@ Page({
   hideModal() {
     this.setData({
       deviceExist: false,
+      redact: false,
     })
   },
   //情景名称输入框
@@ -84,11 +108,11 @@ Page({
   },
 
   //场景区域单选
-  addareaChange(e:any){
+  addareaChange(e: any) {
     let areaIndex = e.detail.value;
     let scenceI = this.data.scenceI
-    scenceI.area=this.data.areas[areaIndex];
-    scenceI.areaId=scenceI.area.id;
+    scenceI.area = this.data.surveyData.areas[areaIndex];
+    scenceI.areaId = scenceI.area.id;
     this.setData({
       scenceI: scenceI,
     });
@@ -111,6 +135,7 @@ Page({
 
   //保存情景
   async comfirmScence() {
+    const smartControls = this.data.smartControls;
     let scenceI = this.data.scenceI
     let secences: never[] = [];
     //判断名称是否为空
@@ -118,25 +143,30 @@ Page({
       MyUtil.hint("请填写情景名称")
       return;
     }
+
+    if (this.data.redact) {
+      MyUtil.hint("编辑情景，待开发")
+    } else {
+      //新增、保存情景
+      Scence.add(this.data.scenceI).then((res: any) => {
+        console.log("res.statusCode:", res.statusCode);
+        if (res.statusCode == 201) {
+          console.log("创建情景完成返回：", res.data);
+          this.setData({
+            smartControls: smartControls
+          })
+        } else {
+          // 请求失败的处理
+        }
+      }).catch((res: any) => {
+        console.log(res);
+        return;
+      })
+    }
+
     //隐藏抽屉
     this.hideModal();
-    const component = this.selectComponent(".conIdList");
-    console.log("component:",component);
-    if (component) {
-      console.log("~~~~~", component);
-    }
-    //新增情景
-    Scence.add(this.data.scenceI).then((res: any) => {
-      console.log("res.statusCode:", res.statusCode);
-      if (res.statusCode == 201) {
-        console.log("创建情景完成返回：", res.data);
-      } else {
-        // 请求失败的处理
-      }
-    }).catch((res: any) => {
-      console.log(res);
-      return;
-    })
+
     //重新获取全部情景信息
     secences = await this.getAllScence(scenceI.surveyId)
     //清除缓存
@@ -171,20 +201,23 @@ Page({
    * 生命周期函数--监听页面加载
    */
   async onLoad() {
-    let areas: never[] = [];
+    let surveyData = {
+      areas: [],
+      caseSurvey: {}
+    };
     let smartControls: never[] = [];
     let secences: never[] = [];
     let conList: never[] = [];
     const eventChannel = this.getOpenerEventChannel()
     // // 监听acceptDataFromOpenerPage事件，获取上一页面通过eventChannel传送到当前页面的数据
     if (eventChannel) {
-      eventChannel.on('acceptDataFromOpenerPage', function (data) {
-        areas = data;
+      await eventChannel.on('acceptDataFromOpenerPage', function (data) {
+        surveyData = data;
       })
-      console.log("areas:", areas);
+      console.log("surveyData:", surveyData);
 
       //获取实例全部智控器件
-      await Scence.getSmartControlByAreas(areas).then((res: any) => {
+      await MyApp.getSmartControlByAreas(surveyData.areas).then((res: any) => {
         if (res.statusCode == 201) {
           // 请求成功,
           smartControls = res.data;
@@ -201,17 +234,17 @@ Page({
 
 
       //获取实例全部情景数据
-      secences = await this.getAllScence(areas[0].surveyId);
+      secences = await this.getAllScence(surveyData.caseSurvey.id);
       console.log("secences::::::", secences);
 
     }
 
     let scenceI = this.data.scenceI;
-    scenceI.surveyId = areas[0].surveyId;
+    scenceI.surveyId = surveyData.caseSurvey.id;
 
 
     this.setData({
-      areas: areas,
+      surveyData: surveyData,
       smartControls: smartControls,
       secences: secences,
       conList: conList,

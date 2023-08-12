@@ -1,9 +1,10 @@
 <view class="subbox {{shakeClass}}" bindtap="click" bindlongpress="longPress">
 	<view class="content">
-		<view class="switch-{{typeNum}}" wx:for="{{boxDada}}" wx:key="index">
-			<view class="title">{{item.name}}</view>
-			<view class="badge-{{item.bindAppId!=0?'white':'red'}}"></view>
+		<view class="switch-{{typeNum}}" wx:for="{{boxDada.apps}}" wx:key="index" catchtap="{{pattern==1?'appclick':''}}" data-item="{{item}}">
+			<view class="title" catchtap="{{pattern==1?'appclick':''}}" data-item="{{item}}">{{item.name}}</view>
+			<view class="badge-{{item.bindAppId!=0||item.bindSceneId!=0?'white':'red'}}" catchtap="{{pattern==1?'appclick':''}}" data-item="{{item}}"></view>
 		</view>
 	</view>
+	<!-- <test>{{boxDada.name}}</test> -->
 	<text class="deletebadge" wx:if="{{pattern==2}}" catchtap="delete">╳</text>
 </view>

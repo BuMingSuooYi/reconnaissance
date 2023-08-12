@@ -10,10 +10,11 @@ Page({
   data: {
     //传来的基础数据，sId和area
     baseData: {},
+    redact: false,
     //表单待填
     formCurtain: {
-      surveyId:Number,
-      areaId:Number,
+      surveyId: Number,
+      areaId: Number,
       name: "默认窗帘名称",
       electromotor: [0],
       mainLength: 3000,
@@ -42,7 +43,6 @@ Page({
         "../../../image/electromotor1.png",
       ],
     },
-
 
   },
 
@@ -168,23 +168,23 @@ Page({
         }
       })
   },
-    //窗帘名称输入框
-    trackNameInput(e: any) {
-      let formCurtain = this.data.formCurtain;
-      formCurtain.name = e.detail.value;
-      this.setData({
-        formCurtain: formCurtain,
-      })
-      console.log(this.data.formCurtain.name);
-    },
-    remarkNameInput(e: any) {
-      let formCurtain = this.data.formCurtain;
-      formCurtain.remark = e.detail.value;
-      this.setData({
-        formCurtain: formCurtain,
-      })
-      console.log(this.data.formCurtain.remark);
-    },
+  //窗帘名称输入框
+  trackNameInput(e: any) {
+    let formCurtain = this.data.formCurtain;
+    formCurtain.name = e.detail.value;
+    this.setData({
+      formCurtain: formCurtain,
+    })
+    console.log(this.data.formCurtain.name);
+  },
+  remarkNameInput(e: any) {
+    let formCurtain = this.data.formCurtain;
+    formCurtain.remark = e.detail.value;
+    this.setData({
+      formCurtain: formCurtain,
+    })
+    console.log(this.data.formCurtain.remark);
+  },
   //电机位置复选框
   electricalChange(e: any) {
     console.log(e.detail.value);
@@ -206,9 +206,9 @@ Page({
   //主轨道尺寸输入框
   mainLineInput(e: any) {
     let formCurtain = this.data.formCurtain;
-    formCurtain.mainLength =parseInt(e.detail.value);
-    console.log("formCurtain.mainLength:::",formCurtain.mainLength);
-    
+    formCurtain.mainLength = parseInt(e.detail.value);
+    console.log("formCurtain.mainLength:::", formCurtain.mainLength);
+
     this.setData({
       formCurtain: formCurtain,
     });
@@ -235,31 +235,60 @@ Page({
     this.drawMainLane();
     console.log("formCurtain.rightLength:", this.data.formCurtain.rightLength);
   },
-  //确认添加窗帘按钮
+  //确认 添加/编辑 窗帘按钮
   saveTrack() {
     let formCurtain = this.data.formCurtain;
     if ((formCurtain.mainLength == 0 || formCurtain.mainLength == undefined) && formCurtain.remark == "") {
       MyUtil.hint("特殊轨道 请填写备注");
       return;
     }
-    console.log("formCurtain:",formCurtain);
-    Curtain.add(formCurtain).then((res: any) => {
-      if (res.statusCode == 201) {
-        formCurtain = res.data;
-        console.log("创建窗帘完成返回：", res.data);
 
-        //跳转主页
-        wx.navigateBack({
-          delta: 1, // 返回的页面数，1 表示返回上一个页面
-          success: function () {
-          }
-        });
-
+    if (formCurtain.name == "") {
+      if (this.data.redact) {
+        formCurtain.name = this.data.baseData.curtain.name;
       } else {
-        // 请求失败的处理
+        formCurtain.name = this.data.baseData.area.name + "窗帘";
       }
-    }).catch((res: any) => { })
+    };
 
+    console.log("formCurtain:", formCurtain);
+
+    if (this.data.redact) {
+      console.log("这是编辑窗帘");
+      Curtain.updata(formCurtain).then((res: any) => {
+        if (res.statusCode == 200) {
+          formCurtain = res.data;
+          console.log("保存窗帘完成返回：", res.data);
+
+          //跳转主页
+          wx.navigateBack({
+            delta: 1, // 返回的页面数，1 表示返回上一个页面
+            success: function () {
+            }
+          });
+
+        } else {
+          // 请求失败的处理
+        }
+      }).catch((res: any) => { })
+    } else {
+      Curtain.add(formCurtain).then((res: any) => {
+        if (res.statusCode == 201) {
+          formCurtain = res.data;
+          console.log("创建窗帘完成返回：", res.data);
+
+          //跳转主页
+          wx.navigateBack({
+            delta: 1, // 返回的页面数，1 表示返回上一个页面
+            success: function () {
+            }
+          });
+
+        } else {
+          // 请求失败的处理
+        }
+      }).catch((res: any) => { })
+    }
   },
 
 
@@ -269,21 +298,54 @@ Page({
   onLoad() {
     let baseData;
     let formCurtain = this.data.formCurtain
+    let redact = this.data.redact;
+    let paintingData=this.data.paintingData
     const eventChannel = this.getOpenerEventChannel()
     // // 监听acceptDataFromOpenerPage事件，获取上一页面通过eventChannel传送到当前页面的数据
     if (eventChannel) {
       eventChannel.on('acceptDataFromOpenerPage', function (data) {
         baseData = data;
-        console.log(baseData);
-        formCurtain.surveyId=baseData.surveyId;
-        formCurtain.areaId=baseData.area.id;
-        formCurtain.name = baseData.area.name + "窗帘";
+        if (data.curtain != undefined) {
+          let curtain = data.curtain;
+          //编辑窗帘,初始化
+          redact = true;
+          paintingData.electromotor=[0,0];
+          formCurtain = {
+            surveyId: curtain.surveyId,
+            areaId: curtain.areaId,
+            name: curtain.name,
+            electromotor: [],
+            mainLength: curtain.mainLength,
+            leftLength: curtain.leftLength,
+            rightLength: curtain.rightLength,
+            remark: curtain.remark,
+          }
+          //绘制电机和复选框的参数
+          formCurtain.id = curtain.id;
+          if (curtain.leftCurtainMotorNodeId != 0){
+            formCurtain.electromotor.push(0);
+            paintingData.electromotor[0]=1;
+          }
+          if (curtain.rightCurtainMotorNodeId != 0){
+            formCurtain.electromotor.push(1);
+            paintingData.electromotor[1]=1;
+          }
+            
+        } else {
+          //新增窗帘
+          console.log(baseData);
+          formCurtain.surveyId = baseData.surveyId;
+          formCurtain.areaId = baseData.area.id;
+          formCurtain.name = baseData.area.name + "窗帘";
+        }
       })
     }
 
     this.setData({
       baseData: baseData,
-      formCurtain:formCurtain
+      formCurtain: formCurtain,
+      redact: redact,
+      paintingData:paintingData
     });
     console.log(this.data.baseData);
   },

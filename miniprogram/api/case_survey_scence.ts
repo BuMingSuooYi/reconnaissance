@@ -3,14 +3,6 @@ const request = require('../utils/request')
 //模块基础URL
 const baseURL = '/case-survey-scene';
 
-//获取区域列表下的全部智能控件（包括窗帘）
-const getSmartControlByAreas = (data: any) => {
-  return request.request({
-    url: baseURL+"/findSmartControlByAreas",
-    data: data,
-    method: 'POST',
-  })
-}
 
 // 获取该实例全部情景数据
 const getAllData = (surverid: number) => {
@@ -47,7 +39,6 @@ const updata = (id: number, data: any) => {
 
 
 export const Scence = {
-  getSmartControlByAreas,
   getAllData,
   deleteById,
   add,

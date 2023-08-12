@@ -16,9 +16,9 @@
       <text class=" text-black text-lg ">电机位置：</text>
       <checkbox-group class="block" bindchange="electricalChange">
         <view class="cu-form-group">
-          <checkbox checked="true" value="0"></checkbox>
+          <checkbox checked="{{paintingData.electromotor[0]==1?'true':''}}" value="0"></checkbox>
           <view class="text">左端</view>
-          <checkbox checked="" value="1"></checkbox>
+          <checkbox checked="{{paintingData.electromotor[1]==1?'true':''}}" value="1"></checkbox>
           <view class="text">右端</view>
         </view>
       </checkbox-group>

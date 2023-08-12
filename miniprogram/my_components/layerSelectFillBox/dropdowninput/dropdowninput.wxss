@@ -24,7 +24,7 @@
 .options {
   /* 设置下拉选项的样式 */
   width: 250rpx;
-  height: 160rpx;
+  max-height: 160rpx;
   position: absolute;
   background-color: #fff;
   border: 1px solid #ccc;

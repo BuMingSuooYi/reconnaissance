@@ -4,11 +4,11 @@
     存在的情景：
   </view>
   <scroll-view class="flex-container bg-white" scroll-y style="height: 20%" wx:if="{{secences.length>0}}">
-    <view class="my-scence light bg-grey" wx:for="{{secences}}" wx:key="index1">
-      <view class="text-black">
+    <view class="my-scence light bg-grey" wx:for="{{secences}}" wx:key="id" catchtap="clickScence" data-scence="{{secences[index]}}">
+      <view class="text-black" catchtap="clickScence" data-scence="{{item}}">
         {{item.scene.name}}
       </view>
-      <view class="padding-left-sm  my-tag text-red">×</view>
+      <view class="padding-left-sm  my-tag text-red" catchtap="deleteScence" data-scence="{{item}}">×</view>
     </view>
   </scroll-view>
 
@@ -52,7 +52,7 @@
   <view class="cu-list menu sm-border">
       <view class="cu-item">
         <view class="title">场景区域：</view>
-        <picker value="{{scenceI.area.name}}" range="{{areas}}" range-key="{{'name'}}" bindchange="addareaChange">
+        <picker value="{{scenceI.area.name}}" range="{{surveyData.areas}}" range-key="{{'name'}}" bindchange="addareaChange">
           <view class="picker">
             {{scenceI.area.name!=""?scenceI.area.name:'应用区域'}}
           </view>

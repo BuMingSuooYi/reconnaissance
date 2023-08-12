@@ -59,3 +59,10 @@
   box-sizing: border-box;
 }
 
+.mycurtain{
+  background-color:rgb(221, 230, 235);
+  margin-right: 50rpx;
+  margin-top: 15rpx;
+}
+
+

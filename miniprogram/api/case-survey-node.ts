@@ -30,7 +30,15 @@ const add=(data:any)=>{
 
 const updata=(id:number,data:any)=>{
   return request.request({
-    url: baseURL+"/"+id,
+    url: baseURL+"/update/"+id,
+    data: data,
+    method: 'PATCH',
+  });
+}
+
+const upNodeAneAppdata=(data:any)=>{
+  return request.request({
+    url: baseURL+"/upNodeAneAppdata",
     data: data,
     method: 'PATCH',
   });
@@ -45,11 +53,13 @@ const addNewRawFrameSymbol=(id:number,data:any)=>{
   });
 }
 
+
 export const  myNode={
   getAll,
   deleteById,
   add,
   updata,
+  upNodeAneAppdata,
   addNewRawFrameSymbol
 };
 
