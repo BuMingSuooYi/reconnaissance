@@ -9,7 +9,12 @@ Page({
    */
   data: {
     //传来的基础数据，sId和area
-    baseData: {},
+    baseData: {
+      area: {},
+      surveyId: Number,
+      curtain: {},
+
+    },
     redact: false,
     //表单待填
     formCurtain: {
@@ -189,7 +194,7 @@ Page({
   electricalChange(e: any) {
     console.log(e.detail.value);
     let formCurtain = this.data.formCurtain;
-    formCurtain.electromotor = e.detail.value;
+    formCurtain.electromotor = e.detail.value.map(str => parseInt(str, 10));    
     let paintingData = this.data.paintingData;
     paintingData.electromotor.fill(0);
     for (let i = 0; i < formCurtain.electromotor.length; i++) {
@@ -295,21 +300,23 @@ Page({
   /**
    * 生命周期函数--监听页面加载
    */
-  onLoad() {
+  async onLoad() {
     let baseData;
     let formCurtain = this.data.formCurtain
     let redact = this.data.redact;
-    let paintingData=this.data.paintingData
+    let paintingData = this.data.paintingData
     const eventChannel = this.getOpenerEventChannel()
     // // 监听acceptDataFromOpenerPage事件，获取上一页面通过eventChannel传送到当前页面的数据
     if (eventChannel) {
-      eventChannel.on('acceptDataFromOpenerPage', function (data) {
+      await eventChannel.on('acceptDataFromOpenerPage', function (data) {
         baseData = data;
+        console.log("本地得到的数据：：", baseData);
+
         if (data.curtain != undefined) {
           let curtain = data.curtain;
           //编辑窗帘,初始化
           redact = true;
-          paintingData.electromotor=[0,0];
+          paintingData.electromotor = [0, 0];
           formCurtain = {
             surveyId: curtain.surveyId,
             areaId: curtain.areaId,
@@ -322,15 +329,15 @@ Page({
           }
           //绘制电机和复选框的参数
           formCurtain.id = curtain.id;
-          if (curtain.leftCurtainMotorNodeId != 0){
+          if (curtain.leftCurtainMotorNodeId != 0) {
             formCurtain.electromotor.push(0);
-            paintingData.electromotor[0]=1;
+            paintingData.electromotor[0] = 1;
           }
-          if (curtain.rightCurtainMotorNodeId != 0){
+          if (curtain.rightCurtainMotorNodeId != 0) {
             formCurtain.electromotor.push(1);
-            paintingData.electromotor[1]=1;
+            paintingData.electromotor[1] = 1;
           }
-            
+
         } else {
           //新增窗帘
           console.log(baseData);
@@ -339,15 +346,15 @@ Page({
           formCurtain.name = baseData.area.name + "窗帘";
         }
       })
-    }
 
-    this.setData({
-      baseData: baseData,
-      formCurtain: formCurtain,
-      redact: redact,
-      paintingData:paintingData
-    });
-    console.log(this.data.baseData);
+      this.setData({
+        baseData: baseData,
+        formCurtain: formCurtain,
+        redact: redact,
+        paintingData: paintingData
+      });
+      console.log(this.data.baseData);
+    }
   },
 
   /**
