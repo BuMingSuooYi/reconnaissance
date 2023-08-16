@@ -28,7 +28,7 @@
 
         <view class="cu-form-group" wx:for="{{area.control}}" wx:for-item="con" wx:for-index="conIndex" wx:key="con.id">
           <view class="title">{{con.name}}</view>
-          <checkbox class='round blue' checked="" value="{{con.id}}"></checkbox>
+          <checkbox class='round blue' checked="{{con.checked==true?'show':''}}" value="{{con.id}}"></checkbox>
           <!-- {{indexList.includes(index.toString())? 'true':''}} -->
         </view>
       </view>

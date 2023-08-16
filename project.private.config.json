@@ -3,6 +3,6 @@
   "projectname": "reconnaissance",
   "setting": {
     "compileHotReLoad": true,
-    "urlCheck": true
+    "urlCheck": false
   }
 }

@@ -33,10 +33,20 @@ Page({
   },
   //点击编辑情景
   clickScence(e: any) {
+    //先清除复选缓存
+    this.clearSelect();
     let scence = e.target.dataset.scence;
-    console.log("点击了（", scence, "）");
+    console.log("点击了", scence);
     let scenceI = this.data.scenceI;
-    scenceI.apps = scence.apps
+    //所属区域
+    const smartControls=this.data.smartControls;
+    const smartControl= smartControls.find((obj) => obj.area.id === parseInt(scence.scene.areaId));
+    //初始化数据
+    scenceI.apps = scence.apps;
+    scenceI.id=scence.scene.id;
+    scenceI.name=scence.scene.name;
+    scenceI.area =smartControl.area;
+    scenceI.areaId=scenceI.area.id;
 
     this.setData({
       redact: true,
@@ -93,6 +103,9 @@ Page({
   },
   //隐藏抽屉
   hideModal() {
+    //如果处于编辑情景状态，隐藏抽屉则需要清除复选缓存
+    if (this.data.redact)
+      this.clearSelect()
     this.setData({
       deviceExist: false,
       redact: false,
@@ -145,7 +158,13 @@ Page({
     }
 
     if (this.data.redact) {
-      MyUtil.hint("编辑情景，待开发")
+      await Scence.updata(scenceI).then((res: any) => {
+        if (res.statusCode == 200) {
+          console.log("保存成功");
+        } else {
+          // 请求失败的处理
+        }
+      }).catch((res: any) => { })
     } else {
       //新增、保存情景
       Scence.add(this.data.scenceI).then((res: any) => {
@@ -163,23 +182,36 @@ Page({
         return;
       })
     }
-
     //隐藏抽屉
     this.hideModal();
-
     //重新获取全部情景信息
     secences = await this.getAllScence(scenceI.surveyId)
+    //清除复选缓存
+    this.clearSelect();
+    this.setData({
+      scenceI: scenceI,
+      secences: secences
+    })
+  },
+
+  //清空复选缓存
+  clearSelect() {
+    let smartControls = this.data.smartControls;
+    let scenceI = this.data.scenceI;
     //清除缓存
+    smartControls.forEach(smartControl => {
+      smartControl.control.forEach(control => {
+        control.checked = false;
+      });
+    });
     // scenceI.areaId=0;
     // scenceI.area={name:""}
     scenceI.name = "";
     scenceI.apps = [];
     this.setData({
+      smartControls: smartControls,
       scenceI: scenceI,
-      secences: secences
     })
-
-
   },
 
   //获取当前实例全部场景信息

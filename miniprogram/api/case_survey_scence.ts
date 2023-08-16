@@ -29,9 +29,9 @@ const add = (data: any) => {
   })
 }
 
-const updata = (id: number, data: any) => {
+const updata = (data: any) => {
   return request.request({
-    url: baseURL + "/" + id,
+    url: baseURL,
     data: data,
     method: 'PATCH',
   });
