@@ -4,10 +4,14 @@ Component({
       type: Array,
       value: [] as object[],
     },
+    selectedOption: {
+      type: Object,
+      value: {},
+    },
   },
   data: {
     showOptions: false,
-    selectedOption: '',
+    // selectedOption: {},
     dropdownStyle: '', // 用于动态设置下拉选择框的样式
   },
   methods: {

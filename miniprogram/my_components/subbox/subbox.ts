@@ -4,7 +4,7 @@ Component({
     boxDada: {
       type: Object,
       value: {
-        // name:,
+        name: "",
         // apps:{
         //   "id": 2,
         //   "name": "房间灯开关",
@@ -15,6 +15,7 @@ Component({
         //   "areaId": 2,
         //   "surveyId": 21
         // }
+        apps: [],
 
       }
     },
@@ -24,20 +25,53 @@ Component({
       value: 0,
     },
   },
+  observers: {
+    //监控取电方式属性
+    'boxDada.powerType': function (powerType: number) {
+      let mark = this.data.mark;
+
+      //发生变化时，该函数会被调用
+      switch (powerType) {
+        case 1:
+          mark = "零"; break;
+        case 2:
+          mark = "单"; break;
+        case 3:
+          mark = "电"; break;
+      }
+
+      this.setData({
+        mark: mark,
+      })
+    }
+    ,//监控取电方式属性
+    'boxDada.apps': function (apps: Array<object>) {
+      let typeNum = this.data.typeNum;
+      //发生变化时，该函数会被调用
+      if (typeNum != apps.length) {
+        typeNum = apps.length;
+        this.setData({
+          typeNum: typeNum,
+        })
+      }
+    }
+  },
   data: {
     // 这里是一些组件内部数据
     //用于指定底盒的样式，目前值定为开关的数量
-    typeNum: Number,
+    typeNum: 0,
     shakeClass: "",
+    mark: "",
   },
   methods: {
-    //更新组件数据
-    updataBoxData() {
-      this.setData({
-        typeNum: this.data.boxDada.apps.length,
-      })
-      console.log("收到了通知,更新了数据,",this.data.typeNum);
-    },
+    // //更新组件数据
+    // updataBoxData() {
+    //   console.log("测试",this.data.boxDada);
+    //   this.setData({
+    //     typeNum: this.data.boxDada.apps.length,
+    //   })
+    //   console.log("收到了通知,更新了数据,",this.data.typeNum);
+    // },
     //改变组件状态
     changePattern(pattern: Number) {
       switch (this.data.pattern) {

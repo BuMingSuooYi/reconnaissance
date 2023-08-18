@@ -28,7 +28,7 @@
       <text class=" text-black text-lg ">主轨尺寸：</text>
       <view class="cu-form-group">
         <input placeholder="{{formCurtain.mainLength}}" name="input" value="{{formCurtain.mainLength}}" bindinput="mainLineInput"></input>
-        <text class="">(毫米)</text>
+        <text class="">(厘米)</text>
       </view>
     </view>
 
@@ -36,7 +36,7 @@
       <text class=" text-black text-lg ">左轨尺寸：</text>
       <view class="cu-form-group">
         <input placeholder="{{formCurtain.leftLength}}" name="input" value="{{formCurtain.leftLength}}" bindinput="leftLineInput"></input>
-        <text class="">(毫米)</text>
+        <text class="">(厘米)</text>
       </view>
     </view>
 
@@ -44,7 +44,7 @@
       <text class=" text-black text-lg ">右轨尺寸：</text>
       <view class="cu-form-group">
         <input placeholder="{{formCurtain.rightLength}}" name="input" value="{{formCurtain.rightLength}}" bindinput="rightLineInput"></input>
-        <text class="">(毫米)</text>
+        <text class="">(厘米)</text>
       </view>
     </view>
 

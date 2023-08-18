@@ -1,5 +1,5 @@
 <view class="container">
   <text>{{title}}</text>
-  <dropdown options="{{dataSet1}}" bind:select="onDropdownSelect"></dropdown>
-  <dropdowninput  options="{{dataSet2}}" object="{{option2}}" bind:mychange="onDropdowninputChange"></dropdowninput>
+  <dropdown options="{{dataSet1}}" selectedOption="{{option1}}" bind:select="onDropdownSelect"></dropdown>
+  <dropdowninput  options="{{dataSet2}}" object="{{option2}}" hint="{{hint}}" bind:mychange="onDropdowninputChange"></dropdowninput>
 </view>

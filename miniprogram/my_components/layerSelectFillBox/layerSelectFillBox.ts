@@ -12,6 +12,18 @@ Component({
       type: Array,
       value: [],
     },
+    hint: {
+      type: String,
+      value: "",
+    },
+    option1:{
+      type: Object,
+      value: {},
+    },
+    option2:{
+      type: Object,
+      value: {},
+    },
     // 定义自定义事件,确定一级选项
     conf1: {
       type: Object, // 类型可以根据实际需求指定
@@ -23,8 +35,8 @@ Component({
   },
 
   data: {
-    option1:{},
-    option2:{}
+    // option1:{},
+    // option2:{}
   },
   methods: {
     //页面使用的事件：通知组件，清除一级选项缓存（应该不需要）

@@ -88,19 +88,19 @@
       <view class="cu-bar bg-white">
         <form>
           <view class="flex cu-form-group" wx:if="{{addNode.newNodeData.siteId==undefined}}">
-            <text>位置：</text>
+            <text>点位：</text>
             <!-- <inputdropdown options="{{addNode.allSites}}" bindchange="addNoderopdownChange" value="{{addNode.newSiteData.name}}"></inputdropdown> -->
-            <dropdowninput options="{{addNode.allSites}}" object="{{addNode.newSiteData}}" bind:mychange="addNoderopdownChange"></dropdowninput>
+            <dropdowninput options="{{addNode.allSites}}" object="{{addNode.newSiteData}}" hint="默认点位" bind:mychange="addNoderopdownChange"></dropdowninput>
 
           </view>
 
           <view class="bg-white nav">
 
-            <view class="flex text-center">
+            <!-- <view class="flex text-center">
               <view class="cu-item flex-sub {{index==addNode.TabCur?'text-blue cur':''}}" wx:for="{{addNode.caseClazz}}" wx:key="index" catchtap="tabSelect" data-index="{{index}}">
                 {{item}}
               </view>
-            </view>
+            </view> -->
 
             <view class=" my-tab " wx:if="{{addNode.TabCur==1}}">
 
@@ -117,7 +117,7 @@
 
               <!-- 点击出现添加app -->
               <view class="padding cu-form-group">
-                <subbox class="subbox" boxDada="{{newSwitchs}}" catchappclick="deleteSwitch" pattern="1"></subbox>
+                <subbox class="subbox" boxDada="{{addNode.newNodeData}}" catchappclick="deleteSwitch" pattern="1"></subbox>
                 <view class="cu-tag line-gray padding-lg my-item " wx:key="index5" catchtap="addUunit">+</view>
               </view>
             </view>
@@ -184,7 +184,7 @@
         <text>控制器件：</text>
         <inputdropdown options="{{addNode.allSmartControls}}" value="{{controlledApp.name}}" bindchange="addDeviceropdownChange"></inputdropdown>
       </view> -->
-      <layerSelectFillBox class="layerSelect" title="被控：  " dataSet1="{{areas}}" dataSet2="{{addNode.allSmartControls}}" bind:conf1="wxml_getAreaSmartControl" bind:conf2="smartControlchange"></layerSelectFillBox>
+      <layerSelectFillBox class="layerSelect" title="被控：" hint="先确认一级选项" dataSet1="{{areas}}" option1="{{option1}}" dataSet2="{{addNode.allSmartControls}}" bind:conf1="wxml_getAreaSmartControl" bind:conf2="smartControlchange"></layerSelectFillBox>
 
 
       <!-- <view class="cu-list menu sm-border" wx:if="{{!addNode.controlDevice}}">
@@ -237,14 +237,14 @@
     <view>
       <view class='bg-blue cu-tag radius light padding-sm' catchtap="ToCurtain" data-area="{{area}}">+窗帘</view>
       <view class='bg-blue cu-tag radius light padding-sm' catchtap="openAddNode" data-area="{{area}}">+底盒</view>
-      <text class="{{unfoldArea.areaId==area.id? 'cuIcon-unfold' : 'cuIcon-right'}}"></text>
+      <text class="{{area.f==true? 'cuIcon-unfold' : 'cuIcon-right'}}"></text>
     </view>
   </view>
-  <view wx:if="{{unfoldArea.areaId==area.id}}">
+  <view wx:if="{{area.f}}">
     <!-- 窗帘部分 -->
-    <view wx:for="{{unfoldArea.data.curtainData}}" wx:for-item="curtainData" wx:for-index="curtainIndex" wx:key="">
+    <view wx:for="{{area.unfoldArea.curtainData}}" wx:for-item="curtainData" wx:for-index="curtainIndex" wx:key="">
       <view class='radius text-shadow text-black .margin-left-lg mycurtain' bindlongpress="openDeletCurtain" data-curtain="{{curtainData}}" catchtap="clackCurtain">
-        {{curtainData.curtain.name}} (mm) {{ curtainData.curtain.remark==""?"":"("+curtainData.curtain.remark+")"}}
+        {{curtainData.curtain.name}} (cm) {{ curtainData.curtain.remark==""?"":"("+curtainData.curtain.remark+")"}}
         <view class="padding-xs solid .margin-xs">
           <view>
             {{curtainData.curtain.mainLength==0? "":" 主轨("+curtainData.curtain.mainLength+")"}}
@@ -257,7 +257,7 @@
       </view>
     </view>
     <!-- 底座部分 -->
-    <view wx:for="{{unfoldArea.data.sitesData}}" wx:for-item="site" wx:for-index="siteIndex" wx:key="site.site.id" catchtap="handleItemClick">
+    <view wx:for="{{area.unfoldArea.sitesData}}" wx:for-item="site" wx:for-index="siteIndex" wx:key="site.site.id" catchtap="handleItemClick">
       <view class='radius text-shadow text-black .margin-left-lg'>{{site.site.name}}
         <!-- 联排部分 -->
         <view class="my-connection" wx:for="{{site.NodeData.T}}" wx:for-item="Tnode" wx:for-index="TnodeIndex" wx:key="Tnode.id">

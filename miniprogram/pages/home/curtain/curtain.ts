@@ -22,7 +22,7 @@ Page({
       areaId: Number,
       name: "默认窗帘名称",
       electromotor: [0],
-      mainLength: 3000,
+      mainLength: 300,
       leftLength: 0,
       rightLength: 0,
       remark: "",
@@ -37,7 +37,7 @@ Page({
       //以主轨道为准，放缩绘图
       startX: 50,
       startY: 30,
-      ratioY: 0.063,//按照x向默认值3.14m对应200，得到y向1m对应63.7
+      ratioY: 0.63,//按照x向默认值3.14m对应200，得到y向1m对应63.7
       lineWidth: 5,//绘制线条宽度
 
       electromotorSize: 30,//绘制电机大小
@@ -194,7 +194,7 @@ Page({
   electricalChange(e: any) {
     console.log(e.detail.value);
     let formCurtain = this.data.formCurtain;
-    formCurtain.electromotor = e.detail.value.map(str => parseInt(str, 10));    
+    formCurtain.electromotor = e.detail.value.map(str => parseInt(str, 10));
     let paintingData = this.data.paintingData;
     paintingData.electromotor.fill(0);
     for (let i = 0; i < formCurtain.electromotor.length; i++) {
@@ -211,7 +211,7 @@ Page({
   //主轨道尺寸输入框
   mainLineInput(e: any) {
     let formCurtain = this.data.formCurtain;
-    formCurtain.mainLength = parseInt(e.detail.value);
+    formCurtain.mainLength =e.detail.value;
     console.log("formCurtain.mainLength:::", formCurtain.mainLength);
 
     this.setData({
@@ -256,7 +256,8 @@ Page({
       }
     };
 
-    console.log("formCurtain:", formCurtain);
+    //保存前尺寸转换为mm单位
+    formCurtain=this.allCmToMm(formCurtain);
 
     if (this.data.redact) {
       console.log("这是编辑窗帘");
@@ -273,7 +274,8 @@ Page({
           });
 
         } else {
-          // 请求失败的处理
+          // 请求失败，尺寸需要转换回cm单位
+          formCurtain=this.allMmToCm(formCurtain);
         }
       }).catch((res: any) => { })
     } else {
@@ -290,10 +292,25 @@ Page({
           });
 
         } else {
-          // 请求失败的处理
+          // 请求失败，尺寸需要转换回cm单位
+          formCurtain=this.allMmToCm(formCurtain);
         }
       }).catch((res: any) => { })
     }
+  },
+
+  allCmToMm(formCurtain:any) {
+    //进行尺寸转换
+    formCurtain.mainLength = this.cmToMm(formCurtain.mainLength);
+    formCurtain.leftLength = this.cmToMm(formCurtain.leftLength);
+    formCurtain.rightLength = this.cmToMm(formCurtain.rightLength);
+    console.log("formCurtain:", formCurtain);
+    return formCurtain;
+  },
+
+  // 厘米到毫米的转换，保留一位小数
+  cmToMm(cm: number): number {
+    return cm* 10 ; // 厘米 * 10 = 毫米
   },
 
 
@@ -337,7 +354,6 @@ Page({
             formCurtain.electromotor.push(1);
             paintingData.electromotor[1] = 1;
           }
-
         } else {
           //新增窗帘
           console.log(baseData);

@@ -8,6 +8,10 @@ Component({
       type: Array,
       value: [] as object[],
     },
+    hint: {
+      type: String,
+      value: "",
+    },
     // 定义自定义事件,确定二级选项
     mychange: {
       type: Object, // 类型可以根据实际需求指定

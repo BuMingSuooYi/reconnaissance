@@ -25,27 +25,27 @@ Page({
 
     /*点击区域展开时重新获取数据 */
     //展开的区域具体数据
-    unfoldArea: {
-      areaId: -1,//展开区域的id
-      data: [
-        // 区域数据的结构
-        //窗帘信息
-        // curtainData：{
+    // unfoldArea: {
+    //   areaId: -1,//展开区域的id
+    //   data: [
+    //     // 区域数据的结构
+    //     //窗帘信息
+    //     // curtainData：{
 
-        // }
-        //位点信息
-        // siteData：{
-        //   site: {
-        //   },
-        //   nodeData: {
-        //     // curtainData:[],//窗帘数据先不管
-        //     T: [],//非联排的底盒
-        //     N: {},//联排的底盒   // 联排号：[底盒1、底盒2]
-        //   }
-        // }
-      ]
+    //     // }
+    //     //位点信息
+    //     // siteData：{
+    //     //   site: {
+    //     //   },
+    //     //   nodeData: {
+    //     //     // curtainData:[],//窗帘数据先不管
+    //     //     T: [],//非联排的底盒
+    //     //     N: {},//联排的底盒   // 联排号：[底盒1、底盒2]
+    //     //   }
+    //     // }
+    //   ]
 
-    },
+    // },
 
 
     //新增节点所用数据
@@ -64,7 +64,7 @@ Page({
       switchExist: false,//新增app界面是否显示
       // controlDevice: true,//新增app绑定的类型默认是智能器件
       TabCur: 1,//默认是开关页
-      allSmartControls: [],//所在实例全部智能被控器件
+      allSmartControls: [],//所在区域全部智能被控器件
       allSwitchs: [],//所在实例的开关
 
       /*在新增底盒时，选择位点后填充的数据*/
@@ -84,6 +84,7 @@ Page({
         surveyId: -1,
         areaId: -1,
         // siteId: undefined,
+        apps: [],
       },
     },
 
@@ -96,6 +97,9 @@ Page({
       areaId: -1,
     },
 
+    //临时添加的，新增开关时一级选项的值
+    option1: {},
+
     //用于批量新增开关的数据
     newSwitchs: {
       newData: {
@@ -106,7 +110,7 @@ Page({
         surveyId: -1,
         areaId: -1,
       },
-      apps: []
+      // apps: []
     },
 
     //删除或修改区域的数据
@@ -137,40 +141,77 @@ Page({
   // 点击区域列表的伸缩
   xml_toStretch(e: any) {
     let areaId = e.currentTarget.dataset.area.id;
-    let unfoldArea = this.data.unfoldArea;
-    console.log("areaId!!!!", areaId);
+    //要伸缩的区域
+    let areas = this.data.areas;
+    areas.forEach((item) => {
+      if (item.id == areaId) {
+        if (item.f == undefined || item.f == false) {
+          item.f = true;
+          //刷新展开的区域
+          this.toStretch(areaId);
+        } else {
+          item.f = false;
+        }
+        this.setData({
+          areas: areas
+        })
+        return;
+      }
+    });
 
-    if (areaId == this.data.unfoldArea.areaId) {
-      //重复点击，缩略
-      unfoldArea.areaId = -1;
-      this.setData({
-        unfoldArea: unfoldArea
-      })
-    } else {
-      this.toStretch(areaId);
-    }
+    // let areaId = e.currentTarget.dataset.area.id;
+    // let unfoldArea = this.data.unfoldArea;
+    // console.log("areaId!!!!", areaId);
+
+    // if (areaId == this.data.unfoldArea.areaId) {
+    //   //重复点击，缩略
+    //   unfoldArea.areaId = -1;
+    //   this.setData({
+    //     unfoldArea: unfoldArea
+    //   })
+    // } else {
+    //   this.toStretch(areaId);
+    // }
   },
 
-  //展开区域
+  //刷新展开的区域
   async toStretch(areaId: number) {
-    let unfoldArea = this.data.unfoldArea;
-    //展开区域
-    unfoldArea.areaId = areaId;
-    console.log(unfoldArea.areaId);
-    await Area.getDataById(unfoldArea.areaId).then((res: any) => {
-      if (res.statusCode == 200) {
-        // 请求成功,关闭新增弹窗，并重新加载实例列表
-        unfoldArea.data = res.data;
-        this.setData({
-          unfoldArea: unfoldArea
-        })
-
-        console.log("unfoldArea=", this.data.unfoldArea);
-
-      } else {
-        // 请求失败的处理
+    let areas = this.data.areas
+    for(let i=0;i<areas.length;i++){
+      if (areas[i].id === areaId) {
+        await Area.getDataById(areaId).then((res: any) => {
+          if (res.statusCode == 200) {
+            // 请求成功,关闭新增弹窗，并重新加载实例列表
+            areas[i].unfoldArea= res.data;
+            this.setData({
+              areas: areas
+            })
+            return;
+          } else {
+            // 请求失败的处理
+          }
+        }).catch((res: any) => { })
       }
-    }).catch((res: any) => { })
+    }
+
+    // let unfoldArea = this.data.unfoldArea;
+    // //展开区域
+    // unfoldArea.areaId = areaId;
+    // console.log(unfoldArea.areaId);
+    // await Area.getDataById(unfoldArea.areaId).then((res: any) => {
+    //   if (res.statusCode == 200) {
+    //     // 请求成功,关闭新增弹窗，并重新加载实例列表
+    //     unfoldArea.data = res.data;
+    //     this.setData({
+    //       unfoldArea: unfoldArea
+    //     })
+
+    //     console.log("unfoldArea=", this.data.unfoldArea);
+
+    //   } else {
+    //     // 请求失败的处理
+    //   }
+    // }).catch((res: any) => { })
   },
 
   // ==========添加区域弹窗部分==========
@@ -280,7 +321,7 @@ Page({
         }
       }).catch((res: any) => { })
     }
-    else{
+    else {
       MyUtil.hint("没有做出修改！")
     }
 
@@ -545,31 +586,44 @@ Page({
     //是否初始化标识，用于删除
     addNode.init = true;
     //开关app数组
-    newSwitchs.apps = JSON.parse(JSON.stringify(Inode.apps));
+    // newSwitchs.apps = JSON.parse(JSON.stringify(Inode.apps));!!!
+    addNode.newNodeData.apps = JSON.parse(JSON.stringify(Inode.apps));
 
     this.setData({
       addNode: addNode,
       newSwitchs: newSwitchs
     })
-    this.upDateSubBox();
+    // this.upDateSubBox();
     console.log("编辑Inode:", Inode);
   },
 
   //预删除底盒中存在的开关
-  deleteSwitch(e: any) {
+  async deleteSwitch(e: any) {
     let switchapp = e.detail.value;
+    let addNode = this.data.addNode;
     let newSwitchs = this.data.newSwitchs;
-    const index = newSwitchs.apps.findIndex(app => app.id === switchapp.id);
-    console.log("触发了删除事件", switchapp, index);
-    if (index != -1) {
-      newSwitchs.apps.splice(index, 1);
-      console.log("预删除了开关：", switchapp);
-    }
-    this.setData({
-      newSwitchs: newSwitchs
-    })
-    this.upDateSubBox();
+    // 显示弹窗
+    await wx.showModal({
+      title: '确认删除' + switchapp.name,
+      // content: '确认删除'+switchapp.name,
+      success: function (res) {
+        if (res.confirm) {
+          const index = addNode.newNodeData.apps.findIndex(app => app.id === switchapp.id);
+          console.log(index != -1);
+          if (index != -1) {
+            addNode.newNodeData.apps.splice(index, 1);
+          }
+          this.setData({
+            newSwitchs: newSwitchs,
+            addNode: addNode
+          })
+          // this.upDateSubBox();
+        }
+      }.bind(this)
+    });
+
   },
+
 
   //删除底盒
   deleteNode(e: any) {
@@ -600,7 +654,6 @@ Page({
         } else {
           // 请求失败的处理
         }
-
       }).catch((res: any) => { })
     }
 
@@ -619,7 +672,7 @@ Page({
       switchExist: false,//新增app界面是否显示
       // controlDevice: true,//新增app绑定的类型默认是智能器件
       TabCur: 1,//默认是开关页
-      allSmartControls: [],//所在实例全部智能被控器件
+      allSmartControls: [],//所在区域全部智能被控器件
       allSwitchs: [],//所在实例的开关
 
       /*在新增底盒时，选择位点后填充的数据*/
@@ -639,6 +692,7 @@ Page({
         surveyId: -1,
         areaId: -1,
         // siteId: undefined,
+        apps: [],
       },
     };
 
@@ -739,7 +793,7 @@ Page({
 
     let addNode = this.data.addNode;
     let newSwitchs = this.data.newSwitchs;
-    newSwitchs.apps = [
+    addNode.newNodeData.apps = [
       {
         name: this.data.socketList[value],
         typeKey: "smart_control",
@@ -760,7 +814,7 @@ Page({
     const value = e.detail.value; // 获取选择的值
     let addNode = this.data.addNode;
     let newSwitchs = this.data.newSwitchs;
-    newSwitchs.apps = [
+    addNode.newNodeData.apps = [
       {
         name: this.data.nullList[value],
         typeKey: "smart_control",
@@ -793,6 +847,14 @@ Page({
     this.setData({
       addNode: addNode
     });
+    //设置第一层
+    let option1 = this.data.option1;
+    option1 = this.data.areas.find(a => a.id === addNode.areaId);
+    console.log("option1::", option1);
+    this.setData({
+      option1: option1
+    })
+    //设置第二层
     this.getAreaSmartControl(this.data.areas.find((item) => item.id === addNode
       .areaId))
   },
@@ -865,7 +927,9 @@ Page({
   wxml_getAreaSmartControl(e: any) {
     const { option1 } = e.detail;
     this.getAreaSmartControl(option1);
-
+    this.setData({
+      option1: option1
+    })
   },
   getAreaSmartControl(option1: any) {
     console.log("option1:", option1);
@@ -875,6 +939,7 @@ Page({
       if (res.statusCode == 200) {
         //请求成功,初始化区域的智能被控列表
         let addNode = this.data.addNode;
+
         addNode.allSmartControls = res.data;
         this.setData({
           addNode: addNode,
@@ -953,6 +1018,7 @@ Page({
 
     //将新开关添加到待创建的开关列表中
     let newSwitchs = this.data.newSwitchs;
+    let addNode = this.data.addNode;
     if (newSwitchs.newData.name == "") {
       //默认名称是被控器件的名称
       newSwitchs.newData.name = controlledApp.name;
@@ -972,29 +1038,34 @@ Page({
 
     console.log("newSwitchs.newData:", newSwitchs.newData);
 
-    newSwitchs.apps.push(newSwitchs.newData);
+    addNode.newNodeData.apps.push(newSwitchs.newData);
     this.setData({
       newSwitchs: newSwitchs,
     })
     this.claseAddSwitch();
-    this.upDateSubBox();
+    // this.upDateSubBox();
   },
 
   //确认添加底盒
   async confirmAddNode() {
     let addNode = this.data.addNode;
+    if (this.data.addNode.newNodeData.apps.length == 0) {
+      MyUtil.hint("未添加开关");
+      return;
+    }
     //判断是新增底盒还是编辑底盒
     if (addNode.init == false) {
-      if (this.data.newSwitchs.apps.length == 0) {
-        MyUtil.hint("未添加开关");
-        return;
+      //判断位点是否填写,未填写默认点位
+      if (addNode.newSiteData.name.trim() == "") {
+        addNode.newSiteData.name = "默认点位"
+      }
+      //按填写的名字在已有位点查找，避免位点重复
+      let site = addNode.allSites.find(s => s.name === addNode.newSiteData.name);
+      if (site != undefined) {
+        addNode.newSiteData = site;
       }
       //判断是否需要新增位点
       if (addNode.newSiteData.id == undefined) {
-        if (addNode.newSiteData.name.trim() == "") {
-          MyUtil.hint("位置 不能为空");
-          return;
-        }
 
         addNode.newSiteData.areaId = addNode.areaId;
         addNode.newSiteData.surveyId = addNode.surveyId;
@@ -1015,11 +1086,11 @@ Page({
       if (addNode.TabCur == 0) {
         //插座
         addNode.newNodeData.typeKey = "box.socket"
-        addNode.newNodeData.name = this.data.newSwitchs.apps[0].name;
+        addNode.newNodeData.name = this.data.addNode.newNodeData.apps[0].name;
       } else if (addNode.TabCur == 2) {
         //空面板
         addNode.newNodeData.typeKey = "box.blank"
-        addNode.newNodeData.name = this.data.newSwitchs.apps[0].name;
+        addNode.newNodeData.name = this.data.addNode.newNodeData.apps[0].name;
       }
       //初始化底盒
       await myNode.updata(addNode.newNodeData.id, addNode.newNodeData).then((res: any) => {
@@ -1036,7 +1107,7 @@ Page({
       }).catch((res: any) => { })
 
       //批量创建switch类型的app，并将app和node关联
-      await MyApp.createApps(this.data.newSwitchs.apps).then((res: any) => {
+      await MyApp.createApps(this.data.addNode.newNodeData.apps).then((res: any) => {
         console.log("批量添加开关res.statusCode：", res.statusCode);
         if (res.statusCode == 201) {
           // 请求成功的处理
@@ -1050,7 +1121,7 @@ Page({
       console.log("进入编辑底盒");
       let updataNode = {
         node: this.data.addNode.newNodeData,
-        apps: this.data.newSwitchs.apps
+        apps: this.data.addNode.newNodeData.apps
       }
 
       await myNode.upNodeAneAppdata(updataNode).then((res: any) => {
@@ -1080,13 +1151,13 @@ Page({
 
   /*一些供调用的方法*/
   //通知自定义底盒更新数据
-  upDateSubBox() {
-    const component = this.selectComponent(".subbox");
-    if (component) {
-      // component.updataBoxData(subabaoxdata);
-      component.updataBoxData();
-    }
-  },
+  // upDateSubBox() {
+  //   const component = this.selectComponent(".subbox");
+  //   if (component) {
+  //     // component.updataBoxData(subabaoxdata);
+  //     component.updataBoxData();
+  //   }
+  // },
   //通知自定义二级选填组件更新二级选填
   upDateDropdowninput(option2: object) {
     const component = this.selectComponent(".layerSelect");

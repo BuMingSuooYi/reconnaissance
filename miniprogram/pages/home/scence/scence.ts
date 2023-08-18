@@ -156,6 +156,11 @@ Page({
       MyUtil.hint("请填写情景名称")
       return;
     }
+    //判断应用区域是否为空
+    if (scenceI.area.id==undefined) {
+      MyUtil.hint("请选择应用区域")
+      return;
+    }
 
     if (this.data.redact) {
       await Scence.updata(scenceI).then((res: any) => {
@@ -167,7 +172,7 @@ Page({
       }).catch((res: any) => { })
     } else {
       //新增、保存情景
-      Scence.add(this.data.scenceI).then((res: any) => {
+      await Scence.add(this.data.scenceI).then((res: any) => {
         console.log("res.statusCode:", res.statusCode);
         if (res.statusCode == 201) {
           console.log("创建情景完成返回：", res.data);
@@ -182,11 +187,11 @@ Page({
         return;
       })
     }
-    //隐藏抽屉
-    this.hideModal();
     //重新获取全部情景信息
     secences = await this.getAllScence(scenceI.surveyId)
-    //清除复选缓存
+    //隐藏抽屉
+    this.hideModal();
+    //清除复选/区域缓存
     this.clearSelect();
     this.setData({
       scenceI: scenceI,
@@ -194,7 +199,7 @@ Page({
     })
   },
 
-  //清空复选缓存
+  //清空复选/区域缓存
   clearSelect() {
     let smartControls = this.data.smartControls;
     let scenceI = this.data.scenceI;
@@ -208,6 +213,8 @@ Page({
     // scenceI.area={name:""}
     scenceI.name = "";
     scenceI.apps = [];
+    scenceI.area={name: ""};
+    scenceI.areaId=0;
     this.setData({
       smartControls: smartControls,
       scenceI: scenceI,

@@ -1,6 +1,6 @@
 <view class="input" >
   <view class="input-box" bindtap="toggleOptions">
-    <input bindinput="onInput" value="{{ object.name }}" placeholder="先确定区域" />
+    <input bindinput="onInput" value="{{ object.name }}" placeholder="{{hint}}" />
     <!-- <image class="arrow" src="/images/arrow-down.png" bindtap="toggleOptions"></image> -->
   </view>
   <scroll-view scroll-y class="options" wx:if="{{ showOptions }}" style="{{ dropdownStyle }}">

@@ -7,4 +7,5 @@
 	</view>
 	<!-- <test>{{boxDada.name}}</test> -->
 	<text class="deletebadge" wx:if="{{pattern==2}}" catchtap="delete">╳</text>
+  <view class="corner-mark">{{mark}}</view>
 </view>
