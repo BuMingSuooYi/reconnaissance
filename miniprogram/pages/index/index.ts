@@ -2,8 +2,10 @@
 //引入勘测实例API
 // const caseSurvey = require('../../api/case-survey');
 import { caseSurvey } from '../../api/case-survey';
-import {MyUtil} from '../../utils/myUtil';
+import {myNode} from '../../api/case-survey-node';
+import { MyUtil } from '../../utils/myUtil';
 
+ 
 Page({
 
   /**
@@ -12,6 +14,8 @@ Page({
   data: {
     //实例列表
     caseSurveys: [],
+    //实例模板列表
+    caseSurveyTemplates: [],
     //删除实例相关数据
     deletaCaseSurvey: {
       exist: false,//删除弹窗是否出现
@@ -23,10 +27,12 @@ Page({
         name: "",
         switchColorPreference: "",
         switchMaterialPreference: "",
+        template: 0
       },
       defData: {//默认值
         switchColorPreference: "商务灰",
         switchMaterialPreference: "PLA",
+        templateObject: {}
       },
 
     }
@@ -72,6 +78,25 @@ Page({
       addCaseSurvey: addCaseSurvey
     })
   },
+  //模板单选
+  templateChange(e: any) {
+    let index = e.detail.value;
+    const caseSurveyTemplates = this.data.caseSurveyTemplates;
+    let templateObject = caseSurveyTemplates[index];
+
+    //模板选择
+    let addCaseSurvey = this.data.addCaseSurvey;
+    addCaseSurvey.data.template = templateObject.id;
+    addCaseSurvey.defData.templateObject = templateObject;
+
+    //继承模板的偏好
+    addCaseSurvey.data.switchColorPreference = templateObject.switchColorPreference;
+    addCaseSurvey.data.switchMaterialPreference = templateObject.switchMaterialPreference;
+
+    this.setData({
+      addCaseSurvey: addCaseSurvey
+    })
+  },
   //颜色输入
   CScolorInput(e: any) {
     const color = e.detail.value;
@@ -93,15 +118,17 @@ Page({
   //关闭新增勘察弹窗
   closeAddCaseSurvey() {
     let addCaseSurvey = {
-      exist: false,
+      exist: false,//删除弹窗是否出现
       data: {
         name: "",
         switchColorPreference: "",
         switchMaterialPreference: "",
+        template: 0
       },
       defData: {//默认值
         switchColorPreference: "商务灰",
         switchMaterialPreference: "PLA",
+        templateObject: {}
       },
     };
     this.setData({
@@ -117,11 +144,11 @@ Page({
       return;
     };
     // 默认值处理
-    if(data.switchColorPreference.trim()==""){
-      data.switchColorPreference=this.data.addCaseSurvey.defData.switchColorPreference;
+    if (data.switchColorPreference.trim() == "") {
+      data.switchColorPreference = this.data.addCaseSurvey.defData.switchColorPreference;
     }
-    if(data.switchMaterialPreference.trim()==""){
-      data.switchMaterialPreference=this.data.addCaseSurvey.defData.switchMaterialPreference;
+    if (data.switchMaterialPreference.trim() == "") {
+      data.switchMaterialPreference = this.data.addCaseSurvey.defData.switchMaterialPreference;
     }
     // 新增请求
     caseSurvey.addCaseSurvey(data).then((res: any) => {
@@ -140,11 +167,11 @@ Page({
     console.log("1.  n=", e.currentTarget.dataset.n);
     let n = parseInt(e.currentTarget.dataset.n)
     let deletaCaseSurvey = this.data.deletaCaseSurvey;
-    deletaCaseSurvey.exist=true,
-    deletaCaseSurvey.n=n,
-    this.setData({
-      deletaCaseSurvey: deletaCaseSurvey,
-    });
+    deletaCaseSurvey.exist = true,
+      deletaCaseSurvey.n = n,
+      this.setData({
+        deletaCaseSurvey: deletaCaseSurvey,
+      });
     // let id = this.data.caseSurveys[this.data.deletaCaseSurvey.n].id;
     // caseSurvey.getById(id).then((res: any) => {
     //   if (res.statusCode == 200) {
@@ -170,7 +197,7 @@ Page({
   confirmDeletCaseSurvey() {
     let id = this.data.caseSurveys[this.data.deletaCaseSurvey.n].id.toString();
     caseSurvey.deleteById(id).then((res: any) => {
-      console.log("res.statusCode:",res.statusCode);
+      console.log("res.statusCode:", res.statusCode);
       if (res.statusCode == 200) {
         //请求成功，重新加载实例列表
         this.getAllCaseSurvey();
@@ -181,14 +208,57 @@ Page({
     }).catch((res: any) => { })
   },
 
+  //设置为模板
+  setTemplate(e: any) {
+    console.log("123456789");
+    
+    let survey = e.currentTarget.dataset.survey;
+    survey.template = 1;
+    // 新增请求
+    caseSurvey.changeTemplate(survey).then((res: any) => {
+      if (res.statusCode == 201) {
+        // 请求成功,关闭新增弹窗，并重新加载实例列表
+        this.closeDeletCaseSurvey();
+        this.getAllCaseSurvey();
+      } else {
+        // 请求失败的处理
+      }
+    }).catch((res: any) => { })
+  },
 
-  //数据请求，获取全部勘测实例
+  //取消模板
+  cancelTemplate(e: any) {
+    let survey = e.currentTarget.dataset.survey;
+    survey.template = 0;
+    // 新增请求
+    caseSurvey.changeTemplate(survey).then((res: any) => {
+      if (res.statusCode == 201) {
+        // 请求成功,关闭新增弹窗，并重新加载实例列表
+        this.closeDeletCaseSurvey();
+        this.getAllCaseSurvey();
+      } else {
+        // 请求失败的处理
+      }
+    }).catch((res: any) => { })
+  },
+
+
+  //数据请求，获取全部勘测实例,并区分出模板
   getAllCaseSurvey() {
     caseSurvey.getAll().then((res: any) => {
       if (res.statusCode == 200) {
+        //筛选模板
+        let surveysTemplates = [
+          {
+            id:0,
+            name:'不需要模板'
+          }
+        ]
+        surveysTemplates=surveysTemplates.concat(res.data.filter(item => item.template === 1));
         // 请求成功的处理
         this.setData({
-          caseSurveys: res.data
+          caseSurveys: res.data,
+          caseSurveyTemplates: surveysTemplates
         })
       } else {
         // 请求失败的处理
@@ -203,6 +273,15 @@ Page({
   onLoad() {
     //数据请求
     this.getAllCaseSurvey();
+    //删除未初始化底盒垃圾数据
+    myNode.removeRubbishNode().then((res: any) => {
+      if (res.statusCode == 200) {
+        console.log("删除了垃圾数据");
+        
+      } else {
+        // 请求失败的处理
+      }
+    }).catch((res: any) => { })
   },
 
   /**

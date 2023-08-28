@@ -13,6 +13,16 @@
         <view class="title">地址</view>
         <input placeholder="输入地址" name="CSname" value="{{addCaseSurvey.data.name}}" bindinput="CSnameInput"></input>
       </view>
+
+      <view class="cu-form-group">
+        <view class="title">选择模板：</view>
+        <picker bindchange="templateChange"  range="{{caseSurveyTemplates}}" range-key="{{'name'}}">
+          <view class="picker">
+            {{addCaseSurvey.data.template>0?addCaseSurvey.defData.templateObject.name:'不需要模板'}}
+          </view>
+        </picker>
+      </view>
+
       <view class="cu-form-group">
         <view class="title">开关颜色偏好：</view>
         <input placeholder="{{addCaseSurvey.defData.switchColorPreference}}" name="CScolor" value="{{addCaseSurvey.data.switchColorPreference}}" bindinput="CScolorInput"></input>
@@ -49,8 +59,10 @@
         <text>材质偏好：{{caseSurveys[deletaCaseSurvey.n].switchMaterialPreference}}</text>
       </view>
     </view>
-    <view class="cu-bar bg-white justify-end">
+    <view class="cu-bar bg-white justify-center">
       <button class="cu-btn bg-red" catchtap="confirmDeletCaseSurvey">删除</button>
+      <button class="cu-btn bg-green" wx:if="{{caseSurveys[deletaCaseSurvey.n].template==0}}" catchtap="setTemplate" data-survey="{{caseSurveys[deletaCaseSurvey.n]}}">设为模板</button>
+      <button class="cu-btn bg-grey" wx:if="{{caseSurveys[deletaCaseSurvey.n].template==1}}" catchtap="cancelTemplate" data-survey="{{caseSurveys[deletaCaseSurvey.n]}}">取消模板</button>
     </view>
   </view>
 </view>
@@ -67,6 +79,6 @@
 
 <view class="cu-list menu sm-border">
   <view class="cu-item arrow" wx:for="{{caseSurveys}}" wx:for-item="caseSurvey" wx:for-index="caseSurveysIndex" wx:key="id" bindtap="toHome" data-n="{{caseSurveysIndex}}" bindlongpress="deleteCaseSurvey">
-    <text class="text-grey">{{caseSurvey.name}}</text>
+    <text class="text-grey" class="{{caseSurvey.template?'my_badge':''}}">{{caseSurvey.name}}</text>
   </view>
 </view>

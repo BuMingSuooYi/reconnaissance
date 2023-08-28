@@ -69,7 +69,7 @@ view{
 
 /* 4键 */
 .switch-4{
-	width: 48%;	
+	width: 46%;	
 	height: 50%;
 	padding: 20rpx 0rpx;
 	margin: 0rpx 4rpx;
@@ -97,7 +97,7 @@ view{
 
 /* 2键 */
 .switch-2{
-	width: 48%;	
+	width: 46%;	
 	height: 100%;
 	padding: 80rpx 0rpx;
 	margin: 0rpx 4rpx;

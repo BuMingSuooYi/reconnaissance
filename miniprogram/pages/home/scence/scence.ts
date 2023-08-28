@@ -39,14 +39,25 @@ Page({
     console.log("点击了", scence);
     let scenceI = this.data.scenceI;
     //所属区域
-    const smartControls=this.data.smartControls;
-    const smartControl= smartControls.find((obj) => obj.area.id === parseInt(scence.scene.areaId));
+    const smartControls = this.data.smartControls;
+    console.log("scence.scene.areaId::::",scence.scene.areaId)
+    let smartControl = smartControls.find((obj) => obj.area.id === parseInt(scence.scene.areaId));
+    console.log("smartControl::::",smartControl)
+    //应对删除区域或者其它问题导致没有应用区域的情景
+    if(smartControl==undefined){
+      smartControl={
+        area:{
+          name:'应用区域'
+        }
+      }
+    }
+
     //初始化数据
     scenceI.apps = scence.apps;
-    scenceI.id=scence.scene.id;
-    scenceI.name=scence.scene.name;
-    scenceI.area =smartControl.area;
-    scenceI.areaId=scenceI.area.id;
+    scenceI.id = scence.scene.id;
+    scenceI.name = scence.scene.name;
+    scenceI.area = smartControl.area;
+    scenceI.areaId = scenceI.area.id;
 
     this.setData({
       redact: true,
@@ -55,10 +66,22 @@ Page({
     })
   },
   //删除情景
-  deleteScence(e: any) {
+  async deleteScence(e: any) {
     let scence = e.target.dataset.scence;
-    console.log("点击了删除（", scence.scene.name, "）");
-    MyUtil.hint("删除情景，待开发")
+    let secences = this.data.secences;
+    Scence.deleteById(scence.scene.id).then((res: any) => {
+      console.log("res.statusCode:", res.statusCode);
+      if (res.statusCode == 200) {
+        //请求成功
+        //重新获取全部情景信息
+        secences = this.getAllScence(scence.surveyId)
+        this.setData({
+          secences:secences
+        })
+      } else {
+        // 请求失败的处理
+      }
+    }).catch((res: any) => { })
   },
 
 
@@ -157,7 +180,7 @@ Page({
       return;
     }
     //判断应用区域是否为空
-    if (scenceI.area.id==undefined) {
+    if (scenceI.area.id == undefined) {
       MyUtil.hint("请选择应用区域")
       return;
     }
@@ -213,8 +236,9 @@ Page({
     // scenceI.area={name:""}
     scenceI.name = "";
     scenceI.apps = [];
-    scenceI.area={name: ""};
-    scenceI.areaId=0;
+    scenceI.area = { name: "" };
+    scenceI.areaId = 0;
+    scenceI.id=0;
     this.setData({
       smartControls: smartControls,
       scenceI: scenceI,

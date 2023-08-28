@@ -174,32 +174,13 @@
     </view>
 
 
-    <view class="padding-xl">
-
-      <!-- <view class="flex cu-form-group margin-top">
-        <switch class='orange radius' bindchange="deviceAndeswitch" checked="{{addNode.controlDevice? 'true':''}}"></switch>
-      </view> -->
-
-      <!-- <view class="cu-form-group">
-        <text>控制器件：</text>
-        <inputdropdown options="{{addNode.allSmartControls}}" value="{{controlledApp.name}}" bindchange="addDeviceropdownChange"></inputdropdown>
-      </view> -->
-      <layerSelectFillBox class="layerSelect" title="被控：" hint="先确认一级选项" dataSet1="{{areas}}" option1="{{option1}}" dataSet2="{{addNode.allSmartControls}}" bind:conf1="wxml_getAreaSmartControl" bind:conf2="smartControlchange"></layerSelectFillBox>
-
-
-      <!-- <view class="cu-list menu sm-border" wx:if="{{!addNode.controlDevice}}">
-        <view class="cu-item">
-          <view class="title">开关：</view>
-          <picker value="{{controlledApp.name}}" range="{{addNode.allSwitchs}}" range-key="{{'name'}}" bindchange="addSwitchChange">
-            <view class="picker">
-              {{controlledApp.name!=""?controlledApp.name:'选择多控开关'}}
-            </view>
-          </picker>
-        </view>
-      </view> -->
-
+    <view class="padding-xl bg-white">
 
       <view class="cu-form-group">
+        <layerSelectFillBox class="layerSelect" title="被控：" hint="先确认一级选项" dataSet1="{{areas}}" option1="{{option1}}" dataSet2="{{addNode.allSmartControls}}" bind:conf1="wxml_getAreaSmartControl" bind:conf2="smartControlchange"></layerSelectFillBox>
+      </view>
+
+      <view class="cu-form-group" style="background-color: transparent;">
         <view class="title">丝印：</view>
         <input placeholder="{{controlledApp.name}}" name="input" value="{{newSwitchs.newData.name}}" bindinput="addAppInput"></input>
       </view>

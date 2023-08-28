@@ -1,13 +1,14 @@
 /* component/layerSelectFillBox/dropdowninput/dropdowninput.wxss *//* custom-input.wxss */
 .input {
-  width: 250rpx;
+  width: 240rpx;
   display: inline-block; /* 设置为行内块元素，使子组件在一行排列 */
   margin-right: 5px; /* 设置右边距，调整子组件之间的间距 */
 }
 
   /* 设置输入框的样式 */
 .input-box {
-  width: 250rpx;
+  width: 240rpx;
+  height: 60rpx;
   display: inline-block;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -23,7 +24,7 @@
 
 .options {
   /* 设置下拉选项的样式 */
-  width: 250rpx;
+  width: 240rpx;
   max-height: 160rpx;
   position: absolute;
   background-color: #fff;
@@ -43,7 +44,7 @@
 
 .arrow {
   width: 12px;
-  height: 12px;
+  height: 14px;
   margin-left: 8px;
   vertical-align: middle;
 }

@@ -35,10 +35,20 @@ const addCaseSurvey=(data:any)=>{
   })
 }
 
+//修改模板字段
+const changeTemplate=(data:any)=>{
+  return request.request({
+    url: baseURL+"/changeTemplate",
+    data: data,
+    method: 'POST',
+  })
+}
+
 export const  caseSurvey={
   getAll,
   getById,
   deleteById,
   addCaseSurvey,
+  changeTemplate,
 };
 

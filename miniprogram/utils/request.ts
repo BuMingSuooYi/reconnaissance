@@ -1,8 +1,9 @@
 // ----http----
 // 封装微信请求方法
 const req = (params:any) => {
-  // const apiUrl = "http://localhost:3000";// 公共的请求地址
-  const apiUrl = "https://rs.starxy.cn";// 公共的请求地址
+  // const apiUrl = "http://localhost:3001";// 公共的请求地址
+  // const apiUrl = "https://rs.starxy.cn";// 正式版地址
+  const apiUrl = "https://rstest.starxy.cn";// 体验版版地址
   let url = params.url;
   let data = params.data;
   let method = params.method;

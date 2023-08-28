@@ -19,6 +19,15 @@ const deleteById = (id:number) => {
     method: 'DELETE',
   })
 }
+
+const removeRubbishNode = () => {
+  return request.request({
+    url: baseURL+"/removeRubbishNode",
+    // data: JSON.stringify(id),
+    method: 'DELETE',
+  })
+}
+
 //添加
 const add=(data:any)=>{
   return request.request({
@@ -57,6 +66,7 @@ const addNewRawFrameSymbol=(id:number,data:any)=>{
 export const  myNode={
   getAll,
   deleteById,
+  removeRubbishNode,
   add,
   updata,
   upNodeAneAppdata,
